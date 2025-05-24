@@ -143,4 +143,10 @@ EMAIL_HOST_USER = 'farmasphere@gmail.com'         # Replace with your email
 EMAIL_HOST_PASSWORD = 'sjei qeak ychr tmvq'        # Use App Password if 2FA is on
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SESSION_COOKIE_SECURE = False
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_HTTPONLY = True  # default, keeps cookie safe from JS
+SESSION_COOKIE_AGE = 1200       # 20 minutes, for example
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_SAVE_EVERY_REQUEST = True
 
