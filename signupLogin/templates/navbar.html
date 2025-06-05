@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Farmer Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter&display=swap" rel="stylesheet" />
+ <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+    nav a {
+      cursor: pointer;
+      padding-bottom: 0.25rem;
+      border-bottom-width: 2px;
+      border-bottom-color: transparent;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    nav a.active {
+      border-bottom-color: #16a34a;
+      color: #000000;
+      font-weight: 600;
+    }
+    nav a:hover:not(.active) {
+      color: #111827;
+    }
+  </style>
+</head>
+<body class="bg-[#f9f9f9]">
+    <header class="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
+        <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+        <div class="logo text-black text-xl tracking-wide">FARMASPHERE</div>
+        <ul class="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
+            <li><a href="{% url 'home' %}" class="hover:text-green-600 transition">Home</a></li>
+            <li><a href="{% url 'weather' %}" class="hover:text-green-600 transition">Weather</a></li>
+            <li><a href="#" class="hover:text-green-600 transition">Crop Advice</a></li>
+            <li><a href="#" class="hover:text-green-600 transition">Schemes</a></li>
+            <li><a href="#" class="hover:text-green-600 transition">Tutorials</a></li>
+            <li><a href="{% url 'profile' %}" class="hover:text-green-600 transition">Profile</a></li>
+        </ul>
+        </nav>
+    </header>
+</body>
+</html>

@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: green;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .weather {
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            background-color: #f9f9f9;
+        }
+        .weather h2 {
+            text-align: center;
+        }
+        .nav {
+            position: relative;
+            width: 100%;
+            top: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: unset;
+            justify-content: space-between;
+            padding: 5px 80px;
+            box-shadow: 0 0.5rem rgba(0, 0, 0, 0.1);
+            flex-direction: column;
+        }
+        .navbar {
+            display: flex;
+            list-style: none;
+        }
+        .navbar a {
+            font-size: 1rem;
+            padding: 15px 20px;
+            color: aqua;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn {
+            background: linear-gradient(to right, rgb(255, 153, 0), rgb(255, 153, 0));
+            color: antiquewhite;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    {% comment %} <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('userRole')) {
+            alert("Please log in first");
+            window.location.href = "{% url 'login' %}";
+        }
+    </script> {% endcomment %}
+
+    <h1>🌤️ Weather Information</h1>
+    <p>This page provides current weather data based on your selected area.</p>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <ul class="navbar">
+            <li><a href="{% url 'home' %}" class="btn">Home</a></li>
+            <li><a href="{% url 'farmer' %}" class="btn">Farmer Dashboard</a></li>
+            <li><a href="#" class="btn">Crop Advice</a></li>
+            <li><a href="{% url 'profile'%}" class="btn">Profile</a></li>
+        </ul>
+    </nav>
+
+    <!-- Weather Section -->
+    <div class="weather">
+        <h2>Current Weather</h2>
+        <label for="area">Select Area: </label>
+        <select id="area" onchange="fetchWeatherData()">
+            <option value="Bangalore">Bangalore</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="London">London</option>
+        </select>
+        <div id="weather-info">
+            <p id="weatherData">Loading weather data...</p>
+        </div>
+    </div>
+
+    <script>
+        // Function to fetch weather data
+        async function fetchWeatherData() {
+            const area = document.getElementById('area').value;
+            const apiKey = 'd4693228a24cbd258bd1bb096e4514e2';  // Replace with your OpenWeatherMap API Key
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${area}&appid=${apiKey}&units=metric`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.cod === 200) {
+                    const weather = data.weather[0];
+                    const main = data.main;
+
+                    // Update weather-info div with the fetched data
+                    document.getElementById('weather-info').innerHTML = `
+                        <h3>Weather in ${area}</h3>
+                        <p><strong>Condition:</strong> ${weather.main} - ${weather.description}</p>
+                        <p><strong>Temperature:</strong> ${main.temp}°C</p>
+                        <p><strong>Humidity:</strong> ${main.humidity}%</p>
+                        <p><strong>Pressure:</strong> ${main.pressure} hPa</p>
+                    `;
+                } else {
+                    document.getElementById('weather-info').innerHTML = '<p>Weather data not found.</p>';
+                }
+            } catch (error) {
+                document.getElementById('weather-info').innerHTML = '<p>Error fetching weather data.</p>';
+            }
+        }
+
+        // Call fetchWeatherData on page load with default area
+        window.onload = fetchWeatherData;
+    </script>
+</body>
+</html>

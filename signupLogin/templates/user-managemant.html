@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+    }
+    .search-box {
+      margin: 20px 0;
+      text-align: center;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    th, td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    .action-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>👥 User Management</h1>
+  </header>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search by name or role..." onkeyup="filterUsers()">
+  </div>
+
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="userBody">
+      <!-- Dynamic rows go here -->
+    </tbody>
+  </table>
+
+  <script>
+    {% comment %} const role = localStorage.getItem('userRole');
+    if (role !== 'admin') {
+      alert("Access Denied. Admins only.");
+      window.location.href = './login.html';
+    } {% endcomment %}
+
+    // Sample user data (replace this with real data from backend or localStorage/db)
+    const users = [
+      { name: "Ravi", email: "ravi@farm.com", role: "farmer" },
+      { name: "Anjali", email: "anjali@farm.com", role: "farmer" },
+      { name: "Admin", email: "admin@farm.com", role: "admin" },
+      { name: "Suresh", email: "suresh@farm.com", role: "farmer" }
+    ];
+
+    function loadUsers() {
+      const tbody = document.getElementById('userBody');
+      tbody.innerHTML = "";
+      users.forEach((user, index) => {
+        const row = `
+          <tr>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.role}</td>
+            <td><button class="action-btn" onclick="removeUser(${index})">Remove</button></td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function filterUsers() {
+      const query = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll("#userTable tbody tr");
+      rows.forEach(row => {
+        const name = row.cells[0].textContent.toLowerCase();
+        const role = row.cells[2].textContent.toLowerCase();
+        row.style.display = name.includes(query) || role.includes(query) ? "" : "none";
+      });
+    }
+
+    function removeUser(index) {
+      if (confirm("Are you sure you want to remove this user?")) {
+        users.splice(index, 1);
+        loadUsers();
+      }
+    }
+
+    loadUsers();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Farmasphere</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'signupLogin/login.css' %}">
+</head>
+<body>
+
+    <div class="container">
+        <h3>Login to Farmasphere</h3>
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            <label for="username">Username</label>
+            <input type="text" name="username" placeholder="Enter Username" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" placeholder="Enter Password" required>
+
+            <button type="submit">Log In</button>
+            <a href="{% url 'signup' %}">Create an account</a>
+            <a href="{% url 'forgot_password' %}">Forgot Password?</a>
+
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </form>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f9;   
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      padding: 20px;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    .card-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 250px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      cursor: pointer;
+    }
+    .card h3 {
+      margin: 0 0 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🛠️ Admin Dashboard</h1>
+    <p>Manage users, crops, analytics and more</p>
+  </header>
+
+  <div class="container">
+    <h2>Quick Access</h2>
+    <div class="card-grid">
+      <div class="card" onclick="location.href='#'">
+        <h3>👥 Users</h3>
+        <p>Manage farmers, admins and profiles</p>
+      </div>
+      <div class="card" onclick="location.href='#'">
+        <h3>🌾 Crops</h3>
+        <p>Update crop database & recommendations</p>
+      </div>
+      <div class="card" onclick="location.href='#'">
+        <h3>💬 Feedback</h3>
+        <p>Review user feedback and concerns</p>
+      </div>
+      <div class="card" onclick="location.href='#'">
+        <h3>📊 Analytics</h3>
+        <p>Track system usage and reports</p>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} <script>
+    // Check admin access
+    const role = localStorage.getItem('userRole');
+    if (role !== 'admin') {
+      alert("Access Denied. Admins only.");
+      window.location.href = "{% url 'login' %}";
+    }
+  </script> {% endcomment %}
+
+</body>
+</html>

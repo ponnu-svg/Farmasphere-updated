@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: green;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .weather, .advice {
+            width: 45%;
+        }
+        .weather {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .advice {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .nav{
+            position: relative;
+            width: 100%;
+            top: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: unset;
+            justify-content: space-between;
+            padding: 5px 80px;
+            box-shadow: 0 0.5rem rgba(0, 0, 0, 0.1);
+            flex-direction: column;
+        }
+        .navbar{
+            display: flex;
+            list-style: none;
+        }
+        .navbar a{
+            font-size: 1rem;
+            padding: 15px 20px;
+            color: aqua;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn{
+            background: linear-gradient(to right,rgb(255, 153, 0),rgb(255, 153, 0));
+            color: antiquewhite;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 15px;
+
+        }
+    </style>
+</head>
+<body>
+    {% comment %} <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('userRole')) {
+            alert("Please log in first");
+            window.location.href = "{% url 'login' %}";
+        }
+    </script> {% endcomment %}
+    
+    {% if profile %}
+
+    <h1>{{ profile }}</h1>
+        
+    {% endif %}
+        
+    
+
+    <h1>🌾 Welcome to Farmer Dashboard</h1>
+    <p>This page provides weather data, crop advice, and other useful farming information.</p>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <ul class="navbar">
+            <li><a href="{% url 'home' %}" class="btn">Home</a></li>
+            <li><a href="{% url 'weather' %}" class="btn">Weather</a></li>
+            <li><a href="#" class="btn">Crop Advice</a></li>
+            <li><a href="{% url 'profile'%}" class="btn">Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Weather Section -->
+        <div class="weather">
+            <h2>Current Weather</h2>
+            <p id="weatherData">Loading weather data...</p>
+        </div>
+
+        <!-- Crop Advice Section -->
+        <div class="advice">
+            <h2>Crop Advice</h2>
+            <p id="cropAdvice">Loading crop advice...</p>
+        </div>
+    </div>
+
+    <script>
+        // Function to fetch weather data
+        function getWeather() {
+            // Example API call (replace with a real one like OpenWeatherMap API)
+            const weatherData = "Sunny, 35°C"; // Replace with real API data
+            document.getElementById("weatherData").textContent = weatherData;
+        }
+
+        // Function to get crop advice based on weather
+        function getCropAdvice() {
+            const advice = "Ideal weather for growing wheat and maize.";
+            document.getElementById("cropAdvice").textContent = advice;
+        }
+
+        // Initialize the weather and advice sections
+        getWeather();
+        getCropAdvice();
+    </script>
+</body>
+</html>

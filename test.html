@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Language Webpage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .language-selector {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        select, button {
+            padding: 8px 12px;
+            font-size: 16px;
+        }
+        button {
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        button:hover {
+            background: #106ebe;
+        }
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="language-selector">
+        <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="ta">Tamil</option>
+            <option value="hi">Hindi</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="ja">Japanese</option>
+            <option value="zh-Hans">Chinese (Simplified)</option>
+        </select>
+        <button id="translateBtn">Translate</button>
+    </div>
+
+    <div class="loading" id="loadingIndicator">
+        Translating...
+    </div>
+
+    <h1>Welcome to Our Website</h1>
+    
+    <p>This is a demonstration of how to translate an entire webpage using Microsoft Translator API.</p>
+    
+    <h2>About Us</h2>
+    <p>We are a company dedicated to providing excellent services to our customers worldwide. Our team consists of professionals with years of experience in various fields.</p>
+    
+    <h2>Our Services</h2>
+    <ul>
+        <li>Web Development</li>
+        <li>Mobile App Development</li>
+        <li>Cloud Solutions</li>
+        <li>AI and Machine Learning</li>
+    </ul>
+    
+    <h2>Contact Information</h2>
+    <p>Email: info@example.com<br>
+    Phone: +1 (123) 456-7890<br>
+    Address: 123 Main Street, City, Country</p>
+
+    <script>
+        // Your Microsoft Translator credentials
+        const apiKey = 'FUwnTjVqNvv46l4jiTUigGnzqgBZawpCAOipfcwXhdFQhapfWW3eJQQJ99BDACqBBLyXJ3w3AAAbACOGRNOJ';
+        const endpoint = 'https://api.cognitive.microsofttranslator.com';
+        const region = 'southeastasia';
+
+        document.getElementById('translateBtn').addEventListener('click', translatePage);
+
+        async function translatePage() {
+            const targetLanguage = document.getElementById('languageSelect').value;
+            if (targetLanguage === 'en') {
+                // If English is selected, reload the page to get original content
+                location.reload();
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'flex';
+
+            try {
+                // Get all text nodes in the body (excluding script and style elements)
+                const walker = document.createTreeWalker(
+                    document.body,
+                    NodeFilter.SHOW_TEXT,
+                    {
+                        acceptNode: function(node) {
+                            // Skip empty nodes and nodes inside script/style elements
+                            if (!node.nodeValue.trim() || 
+                                node.parentNode.tagName === 'SCRIPT' || 
+                                node.parentNode.tagName === 'STYLE') {
+                                return NodeFilter.FILTER_REJECT;
+                            }
+                            return NodeFilter.FILTER_ACCEPT;
+                        }
+                    },
+                    false
+                );
+
+                const textNodes = [];
+                while (walker.nextNode()) {
+                    textNodes.push(walker.currentNode);
+                }
+
+                // Extract text content
+                const texts = textNodes.map(node => node.nodeValue.trim()).filter(text => text.length > 0);
+
+                if (texts.length === 0) {
+                    console.log('No text content found to translate');
+                    return;
+                }
+
+                // Translate all text content
+                const translations = await translateTexts(texts, targetLanguage);
+
+                // Apply translations back to the DOM
+                if (translations.length === textNodes.length) {
+                    for (let i = 0; i < textNodes.length; i++) {
+                        textNodes[i].nodeValue = translations[i];
+                    }
+                } else {
+                    console.error('Translation count mismatch');
+                }
+
+                // Change HTML lang attribute
+                document.documentElement.lang = targetLanguage;
+
+            } catch (error) {
+                console.error('Translation error:', error);
+                alert('Translation failed. Please check console for details.');
+            } finally {
+                // Hide loading indicator
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }
+        }
+
+        async function translateTexts(texts, targetLanguage) {
+            const url = `${endpoint}/translate?api-version=3.0&to=${targetLanguage}`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Ocp-Apim-Subscription-Key': apiKey,
+                    'Ocp-Apim-Subscription-Region': region,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(texts.map(text => ({ Text: text })))
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data.map(item => item.translations[0].text);
+        }
+    </script>
+</body>
+</html>

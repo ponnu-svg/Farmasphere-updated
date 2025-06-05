@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Farmer Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter&display=swap" rel="stylesheet" />
+ <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+    nav a {
+      cursor: pointer;
+      padding-bottom: 0.25rem;
+      border-bottom-width: 2px;
+      border-bottom-color: transparent;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    nav a.active {
+      border-bottom-color: #16a34a;
+      color: #000000;
+      font-weight: 600;
+    }
+    nav a:hover:not(.active) {
+      color: #111827;
+    }
+  </style>
+</head>
+<body class="bg-[#f9f9f9]">
+  <!-- Header -->
+  <header class="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
+    <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+      <div class="logo text-black text-xl tracking-wide">FARMASPHERE</div>
+      <ul class="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
+        <li><a href="{% url 'home' %}" class="hover:text-green-600 transition">Home</a></li>
+        <li><a href="{% url 'weather' %}" class="hover:text-green-600 transition">Weather</a></li>
+        <li><a href="#" class="hover:text-green-600 transition">Crop Advice</a></li>
+        <li><a href="#" class="hover:text-green-600 transition">Schemes</a></li>
+        <li><a href="#" class="hover:text-green-600 transition">Tutorials</a></li>
+        <li><a href="{% url 'profile' %}" class="hover:text-green-600 transition">Profile</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Welcome Section -->
+  <main class="max-w-7xl mx-auto px-6 py-10">
+    <h1 class="text-3xl font-bold text-gray-800 mb-4">🌾 Welcome to Farmer Dashboard</h1>
+    <p class="text-gray-600 mb-10">This page provides weather data, crop advice, and other useful farming information.</p>
+
+    <!-- Content Sections -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Weather Section -->
+      <div class="bg-white shadow-md p-6 rounded-lg border border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Current Weather</h2>
+        <p id="weatherData" class="text-gray-600">Loading weather data...</p>
+      </div>
+
+      <!-- Crop Advice Section -->
+      <div class="bg-white shadow-md p-6 rounded-lg border border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Crop Advice</h2>
+        <p id="cropAdvice" class="text-gray-600">Loading crop advice...</p>
+      </div>
+
+      <!-- Government schemes section -->
+      <div class="bg-white shadow-md p-6 rounded-lg border border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Government schemes</h2>
+        <p id="cropAdvice" class="text-gray-600">Loading Government Schemes...</p>
+      </div>
+
+      <!-- Modern farming techniques -->
+      <div class="bg-white shadow-md p-6 rounded-lg border border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800 mb-2">Farming techniques</h2>
+        <p id="cropAdvice" class="text-gray-600">Loading Farming techniques...</p>
+      </div>
+    </div>
+  </main>
+
+
+  <script>
+    const sections = document.querySelectorAll('section[id], main[id]');
+    const navLinks = document.querySelectorAll('nav ul li a');
+
+    function activateNavLink() {
+      let scrollY = window.pageYOffset;
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionHeight = section.offsetHeight;
+        const sectionId = section.getAttribute('id');
+        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+          navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + sectionId) {
+              link.classList.add('active');
+            }
+          });
+        }
+      });
+    }
+
+    window.addEventListener('scroll', activateNavLink);
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
