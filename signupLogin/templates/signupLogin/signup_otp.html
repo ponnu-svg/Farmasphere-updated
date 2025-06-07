@@ -3,23 +3,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Reset Password - Farmasphere</title>
+    <title>Verify OTP - Farmasphere</title>
     <link rel="stylesheet" href="{% static 'signupLogin/login.css' %}">
 </head>
 <body>
     <div class="container">
-        <h3>Reset Your Password</h3>
-        <form method="POST" action="{% url 'reset_password' %}">
+        <h3>Verify OTP</h3>
+        <form method="POST" action="{% url 'signup_verify_otp' %}">
             {% csrf_token %}
-            <label for="password">New Password</label>
-            <input type="password" name="password" placeholder="New Password" required>
-
-            <label for="confirm_password">Confirm Password</label>
-            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
-
-            <button type="submit">Reset Password</button>
+            <label for="otp">Enter OTP sent to your Email</label>
+            <input type="text" name="otp" placeholder="Enter OTP" required>
+            <button type="submit">Verify OTP</button>
         </form>
-        <a href="{% url 'login' %}">Back to Login</a>
         {% if messages %}
             <div style="margin: 20px 0;">
                 {% for message in messages %}

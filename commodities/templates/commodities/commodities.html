@@ -3,172 +3,241 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Agricultural Commodities</title>
+  <title>Agricultural Commodities Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter&display=swap" rel="stylesheet" />
   <style>
-    html {
-      scroll-behavior: smooth;
-    }
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #f9f9f9;
+      background-color: #f7fafc;
     }
-    .logo {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 700;
+    .loading {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.8);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #065f46;
     }
-    nav a {
-      cursor: pointer;
-      padding-bottom: 0.25rem;
-      border-bottom-width: 2px;
-      border-bottom-color: transparent;
-      transition: border-color 0.3s, color 0.3s;
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; margin: 0; background-color: #f9f9f9; }
+    .logo { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+    .line-with-text {
+      display: flex; align-items: center; text-align: center; color: #9ca3af;
+      font-size: 0.875rem; margin-top: 1rem; margin-bottom: 1rem;
     }
-    nav a.active {
-      border-bottom-color: #16a34a;
-      color: #000000;
-      font-weight: 600;
+    .line-with-text::before, .line-with-text::after {
+      content: ""; flex: 1; border-bottom: 1px solid #d1d5db;
     }
-    nav a:hover:not(.active) {
-      color: #111827;
+    .line-with-text:not(:empty)::before { margin-right: 0.75rem; }
+    .line-with-text:not(:empty)::after { margin-left: 0.75rem; }
+
+    .loading {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255,255,255,0.8); z-index: 1001;
+      justify-content: center; align-items: center; font-size: 24px;
     }
   </style>
 </head>
-<body class="text-gray-800 min-h-screen px-6 py-8">
+<body class="min-h-screen flex flex-col">
 
-  <!-- Navbar -->
+  <div class="loading" id="loadingIndicator">Translating...</div>
+
+  <!-- Header with Translation -->
   <header class="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
-    <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+    <nav class="max-w-7xl mx-auto flex flex-wrap items-center justify-between px-6 py-4">
+      <!-- Logo -->
       <div class="logo text-black text-xl tracking-wide">FARMASPHERE</div>
+
+      <!-- Navigation Links -->
       <ul class="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
-        <li><a href="{% url 'home' %}" class="hover:text-green-600 transition">Home</a></li>
+        <li><a href="#" class="hover:text-green-600 transition">Home</a></li>
         <li><a href="{% url 'weather' %}" class="hover:text-green-600 transition">Weather</a></li>
         <li><a href="#" class="hover:text-green-600 transition">Crop Advice</a></li>
         <li><a href="#" class="hover:text-green-600 transition">Schemes</a></li>
         <li><a href="#" class="hover:text-green-600 transition">Tutorials</a></li>
-        <li><a href="{% url 'profile' %}" class="hover:text-green-600 transition">Profile</a></li>
+        <li><a href="{% url 'commodities:home' %}" class="hover:text-green-600 transition">MarketPrice</a></li>
       </ul>
+
+      <!-- Language Selector -->
+      <div class="hidden md:flex items-center space-x-2 ml-4">
+        <select id="languageSelect" onchange="translatePage()" class="border border-gray-300 rounded px-2 py-1 text-sm">
+          <option value="en">English</option>
+          <option value="ta">Tamil</option>
+          <option value="te">Telugu</option>
+          <option value="kn">Kannada</option>
+          <option value="ml">Malayalam</option>
+          <option value="hi">Hindi</option>
+          <option value="mr">Marathi</option>
+          <option value="bho">Bhojpuri</option>
+          <option value="ks">Kashmiri</option>
+          <option value="as">Assamese</option>
+          <option value="pa">Punjabi</option>
+          <option value="or">Odia</option>
+        </select>
+      </div>
     </nav>
   </header>
 
-  <!-- Language Loading Spinner -->
-  <div id="loadingIndicator" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow text-center">
-      <span class="text-green-600 font-semibold">Translating content...</span>
+  <!-- Main Section -->
+  <main class="flex-grow max-w-6xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-8 text-center text-green-800">Agricultural Commodities Dashboard</h1>
+
+    <!-- Filter Section -->
+    <section class="flex flex-wrap gap-6 items-end justify-center mb-10 bg-white p-6 rounded shadow-md max-w-4xl mx-auto">
+      <div class="flex flex-col min-w-[220px]">
+        <label for="stateSelect" class="font-semibold mb-2 text-gray-700">Select State <span class="text-red-500">*</span></label>
+        <select id="stateSelect" class="border border-green-600 rounded px-3 py-2 text-base" required>
+          <option value="">-- Select a state --</option>
+          <option value="Maharashtra">Maharashtra</option>
+          <option value="Karnataka">Karnataka</option>
+          <option value="Tamil Nadu">Tamil Nadu</option>
+          <option value="Andhra Pradesh">Andhra Pradesh</option>
+          <option value="Punjab">Punjab</option>
+          <option value="Telangana">Telangana</option>
+        </select>
+      </div>
+
+      <div class="flex flex-col min-w-[220px]">
+        <label for="commoditySelect" class="font-semibold mb-2 text-gray-700">Select Commodity (Optional)</label>
+        <select id="commoditySelect" class="border border-green-600 rounded px-3 py-2 text-base">
+          <option value="">-- All Commodities --</option>
+        </select>
+      </div>
+
+      <div class="flex flex-col min-w-[220px]">
+        <label for="marketSelect" class="font-semibold mb-2 text-gray-700">Select Market (Optional)</label>
+        <select id="marketSelect" class="border border-green-600 rounded px-3 py-2 text-base">
+          <option value="">-- All Markets --</option>
+        </select>
+      </div>
+
+      <div>
+        <button id="fetchBtn" class="bg-green-600 text-white font-semibold py-3 px-8 rounded hover:bg-green-700 transition duration-300 focus:outline-none focus:ring-4 focus:ring-green-400">
+          Fetch Data
+        </button>
+      </div>
+    </section>
+
+    <!-- Messages -->
+    <div id="loading" class="hidden text-center text-green-700 font-semibold mb-4">Loading data, please wait...</div>
+    <div id="error" class="text-center text-red-600 font-semibold mb-4" role="alert" aria-live="assertive"></div>
+    <div id="noData" class="text-center text-gray-600 font-semibold mb-4"></div>
+
+    <!-- Data Table -->
+    <div class="overflow-x-auto">
+      <table id="commoditiesTable" class="min-w-full bg-white rounded shadow-md hidden">
+        <thead class="bg-green-600 text-white">
+          <tr>
+            <th class="py-3 px-6 text-left">State</th>
+            <th class="py-3 px-6 text-left">Market</th>
+            <th class="py-3 px-6 text-left">Commodity</th>
+            <th class="py-3 px-6 text-left">Min Price</th>
+            <th class="py-3 px-6 text-left">Max Price</th>
+            <th class="py-3 px-6 text-left">Modal Price</th>
+            <th class="py-3 px-6 text-left">Arrival Date</th>
+          </tr>
+        </thead>
+        <tbody id="commoditiesBody" class="text-gray-700"></tbody>
+      </table>
     </div>
-  </div>
+  </main>
 
-  <!-- Title & Language Selector -->
-  <header class="text-center mt-8 mb-6">
-    <h1 class="text-3xl font-bold text-green-700">Agricultural Commodity Prices</h1>
-    <div class="hidden md:flex items-center space-x-2 mt-4 justify-center">
-      <label for="languageSelect" class="mr-2">Language:</label>
-      <select id="languageSelect" onchange="translatePage()" class="border border-gray-300 rounded px-2 py-1 text-sm">
-        <option value="en">English</option>
-        <option value="ta">Tamil</option>
-        <option value="te">Telugu</option>
-        <option value="kn">Kannada</option>
-        <option value="ml">Malayalam</option>
-        <option value="hi">Hindi</option>
-        <option value="mr">Marathi</option>
-        <option value="bho">Bhojpuri</option>
-        <option value="ks">Kashmiri</option>
-        <option value="as">Assamese</option>
-        <option value="pa">Punjabi</option>
-        <option value="or">Odia</option>
-      </select>
-    </div>
-  </header>
+  <footer class="bg-green-700 text-white py-4 text-center font-semibold mt-auto">
+    &copy; 2025 Farmasphere. All rights reserved.
+  </footer>
 
-  <!-- Filter Section -->
-  <section class="flex flex-wrap gap-4 items-end justify-center mb-6 max-w-4xl mx-auto">
-    <div class="flex flex-col min-w-[200px]">
-      <label for="stateSelect" class="font-semibold mb-1">Select State:</label>
-      <select id="stateSelect" class="border border-green-600 rounded px-3 py-2 text-base">
-        <option value="">-- Select a state --</option>
-        <option value="Maharashtra">Maharashtra</option>
-        <option value="Karnataka">Karnataka</option>
-        <option value="Tamil Nadu">Tamil Nadu</option>
-        <option value="Andhra Pradesh">Andhra Pradesh</option>
-        <option value="Punjab">Punjab</option>
-        <option value="Telangana">Telangana</option>
-      </select>
-    </div>
-    <button id="fetchBtn" class="bg-green-600 text-white font-semibold py-2 px-6 rounded hover:bg-green-700 transition-all duration-300">
-      Fetch Data
-    </button>
-  </section>
-
-  <!-- Status/Feedback -->
-  <div id="loading" class="text-gray-500 italic text-center hidden">Loading data, please wait...</div>
-  <div id="error" class="text-red-600 text-center mt-4 font-semibold"></div>
-  <div id="noData" class="text-gray-600 text-center mt-4">Select a state and click "Fetch Data" to view commodity prices.</div>
-
-  <!-- Table Section -->
-  <div class="overflow-x-auto mt-6 max-w-6xl mx-auto">
-    <table id="commoditiesTable" class="hidden w-full text-sm bg-white shadow rounded overflow-hidden">
-      <thead class="bg-green-700 text-white">
-        <tr>
-          <th class="px-4 py-2 text-left">State</th>
-          <th class="px-4 py-2 text-left">Market</th>
-          <th class="px-4 py-2 text-left">Commodity</th>
-          <th class="px-4 py-2 text-left">Min Price</th>
-          <th class="px-4 py-2 text-left">Max Price</th>
-          <th class="px-4 py-2 text-left">Modal Price</th>
-          <th class="px-4 py-2 text-left">Date</th>
-        </tr>
-      </thead>
-      <tbody id="commoditiesBody" class="divide-y divide-gray-200"></tbody>
-    </table>
-  </div>
-
-  <!-- JS -->
   <script>
     const fetchBtn = document.getElementById('fetchBtn');
     const stateSelect = document.getElementById('stateSelect');
+    const commoditySelect = document.getElementById('commoditySelect');
+    const marketSelect = document.getElementById('marketSelect');
+    const tbody = document.getElementById('commoditiesBody');
+    const table = document.getElementById('commoditiesTable');
     const loadingDiv = document.getElementById('loading');
     const errorDiv = document.getElementById('error');
     const noDataDiv = document.getElementById('noData');
-    const table = document.getElementById('commoditiesTable');
-    const tbody = document.getElementById('commoditiesBody');
+
+    stateSelect.addEventListener('change', () => {
+      const state = stateSelect.value;
+      commoditySelect.innerHTML = '<option value="">-- All Commodities --</option>';
+      marketSelect.innerHTML = '<option value="">-- All Markets --</option>';
+      errorDiv.textContent = '';
+      noDataDiv.textContent = '';
+      tbody.innerHTML = '';
+      table.classList.add('hidden');
+
+      if (!state) return;
+
+      loadingDiv.classList.remove('hidden');
+
+      fetch(`/fetch-commodity-data?state=${encodeURIComponent(state)}`)
+        .then(res => {
+          loadingDiv.classList.add('hidden');
+          if (!res.ok) throw new Error(`Status: ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          if (data.error) {
+            errorDiv.textContent = data.error;
+            return;
+          }
+          data.commodities.forEach(c => {
+            commoditySelect.insertAdjacentHTML('beforeend', `<option value="${c}">${c}</option>`);
+          });
+          data.markets.forEach(m => {
+            marketSelect.insertAdjacentHTML('beforeend', `<option value="${m}">${m}</option>`);
+          });
+        })
+        .catch(err => {
+          loadingDiv.classList.add('hidden');
+          errorDiv.textContent = 'Failed to load commodities and markets.';
+          console.error(err);
+        });
+    });
 
     fetchBtn.addEventListener('click', () => {
       const state = stateSelect.value;
+      const commodity = commoditySelect.value;
+      const market = marketSelect.value;
+
       errorDiv.textContent = '';
       tbody.innerHTML = '';
       table.classList.add('hidden');
-      noDataDiv.classList.add('hidden');
+      noDataDiv.textContent = '';
 
       if (!state) {
-        errorDiv.textContent = 'Please select a state before fetching data.';
+        errorDiv.textContent = 'Please select a state.';
         return;
       }
 
       loadingDiv.classList.remove('hidden');
 
-      fetch(`/fetch-commodity-data?state=${encodeURIComponent(state)}`)
-        .then(response => {
+      let url = `/fetch-commodity-data?state=${encodeURIComponent(state)}`;
+      if (commodity) url += `&commodity=${encodeURIComponent(commodity)}`;
+      if (market) url += `&market=${encodeURIComponent(market)}`;
+
+      fetch(url)
+        .then(res => {
           loadingDiv.classList.add('hidden');
-          if (!response.ok) throw new Error(`Error: ${response.status}`);
-          return response.json();
+          if (!res.ok) throw new Error(`Status: ${res.status}`);
+          return res.json();
         })
         .then(data => {
-          if (data.error) {
-            errorDiv.textContent = data.error;
-            noDataDiv.classList.remove('hidden');
+          if (data.error || !data.records || data.records.length === 0) {
+            noDataDiv.textContent = 'No data found for selected filters.';
             return;
           }
-
-          const commodities = data.commodities || [];
-          if (commodities.length === 0) {
-            noDataDiv.textContent = `No commodity data found for ${state}.`;
-            noDataDiv.classList.remove('hidden');
-            return;
-          }
-
-          commodities.forEach(item => {
+          data.records.forEach(item => {
             const tr = document.createElement('tr');
+            tr.classList.add('border-b', 'border-gray-200', 'hover:bg-green-50');
             tr.innerHTML = `
               <td class="px-4 py-2">${item.state || ''}</td>
               <td class="px-4 py-2">${item.market || ''}</td>
@@ -176,23 +245,20 @@
               <td class="px-4 py-2">${item.min_price || '--'}</td>
               <td class="px-4 py-2">${item.max_price || '--'}</td>
               <td class="px-4 py-2">${item.modal_price || '--'}</td>
-              <td class="px-4 py-2">${item.date || ''}</td>
-            `;
+              <td class="px-4 py-2">${item.arrival_date || ''}</td>`;
             tbody.appendChild(tr);
           });
-
           table.classList.remove('hidden');
-          noDataDiv.classList.add('hidden');
         })
         .catch(err => {
           loadingDiv.classList.add('hidden');
-          errorDiv.textContent = 'Failed to fetch commodity data. Try again later.';
-          noDataDiv.classList.remove('hidden');
+          errorDiv.textContent = 'Failed to fetch data.';
           console.error(err);
         });
     });
 
-    const translatorApiKey = 'YOUR_TRANSLATOR_API_KEY';
+    // Translation Logic
+    const translatorApiKey = 'DLD9cH0pI5Mz39HbcFukUhkkym8s1zzchdImFSuWRlLygEkoY7N0JQQJ99BFACGhslBXJ3w3AAAbACOGLP7T';
     const endpoint = 'https://api.cognitive.microsofttranslator.com';
     const region = 'centralindia';
 
@@ -205,8 +271,9 @@
       try {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
           acceptNode: node => {
-            const parent = node.parentNode.tagName;
-            if (!node.nodeValue.trim() || parent === 'SCRIPT' || parent === 'STYLE') return NodeFilter.FILTER_REJECT;
+            if (!node.nodeValue.trim() ||
+                node.parentNode.tagName === 'SCRIPT' ||
+                node.parentNode.tagName === 'STYLE') return NodeFilter.FILTER_REJECT;
             return NodeFilter.FILTER_ACCEPT;
           }
         });

@@ -59,7 +59,7 @@
     <div class="absolute inset-0 flex flex-col justify-center max-w-7xl mx-auto px-6 md:px-12">
       <h1 class="text-white font-bold text-4xl md:text-5xl max-w-3xl leading-tight">Empowering farmers</h1>
       <p class="text-white text-lg md:text-xl mt-2 max-w-2xl">Your direct marketplace for produce and knowledge</p>
-      <a href="#" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold text-sm md:text-base rounded px-6 py-3 mt-6">VIEW PRODUCTS</a>
+      <a href="#products" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold text-sm md:text-base rounded px-6 py-3 mt-6">VIEW PRODUCTS</a>
     </div>
   </section>
 
@@ -71,7 +71,7 @@
         <p class="text-gray-600 text-base leading-relaxed mb-6">
           Farmasphere is revolutionizing agriculture by providing farmers with a dynamic web platform that connects them directly to the marketplace...
         </p>
-        <a class="text-gray-800 underline text-base font-normal" href="#">Get in touch</a>
+        <a class="text-gray-800 underline text-base font-normal" href="{%url 'farmer'%}">Get in touch</a>
       </section>
       <section class="md:w-1/2 mt-10 md:mt-0">
         <div class="grid grid-cols-3 gap-2 mb-2">
@@ -95,7 +95,7 @@
         <article class="bg-white shadow-lg">
           <img class="w-full object-cover" src="https://storage.googleapis.com/a1aa/image/b884dd4a-3247-4607-43da-fccabad62c80.jpg" alt="" />
           <div class="p-6">
-            <h2 class="font-extrabold text-lg mb-2 cursor-pointer hover:underline">Real-time weather data ›</h2>
+            <a href="{% url 'weather'%}"><h2 class="font-extrabold text-lg mb-2 cursor-pointer hover:underline">Real-time weather data ›</h2></a>
             <p class="text-gray-600 text-sm leading-relaxed">Make informed decisions with real-time weather updates.</p>
           </div>
         </article>
@@ -177,7 +177,8 @@
       <section class="md:w-1/2">
         <p class="text-green-600 font-semibold text-xs uppercase mb-1">GET IN TOUCH</p>
         <h1 class="font-extrabold text-2xl leading-tight mb-8">We're here to support you!</h1>
-        <form class="space-y-6 max-w-md">
+        <form class="space-y-6 max-w-md" method="post" action="">
+          {% csrf_token %}
           <div>
             <label for="name" class="block text-xs font-semibold mb-1">Name <span class="text-red-600">*</span></label>
             <input id="name" name="name" type="text" placeholder="Jane Smith" class="w-full border border-gray-300 px-3 py-2 text-sm rounded-sm focus:outline-none focus:ring-1 focus:ring-black" required />
@@ -196,6 +197,14 @@
           </div>
           <button type="submit" class="bg-black text-white font-semibold text-sm px-6 py-3 rounded-sm hover:bg-gray-900 transition">Submit</button>
         </form>
+        {% if messages %}
+        {% for message in messages %}
+          <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mt-4">
+            {{ message }}
+          </div>
+        {% endfor %}
+        {% endif %}
+
       </section>
 
       <aside class="md:w-1/2 mt-12 md:mt-0 bg-gray-100 p-8 rounded-sm max-w-md">

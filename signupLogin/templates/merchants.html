@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FarmaConnect - Merchants Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --color-bg: #ffffff;
+    --color-text-primary: #1e3a8a; /* dark blue */
+    --color-text-secondary: #47585c;
+    --color-accent: #3b82f6; /* blue-500 */
+    --color-accent-hover: #2563eb;
+    --color-button-bg: #3b82f6;
+    --color-button-bg-hover: #2563eb;
+    --color-card-bg: #eff6ff;
+    --color-input-border: #93c5fd;
+    --color-input-border-focus: #60a5fa;
+    --color-error: #dc2626;
+    --radius: 0.75rem;
+    --shadow-light: 0 4px 12px rgba(59,130,246,0.1);
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Poppins', sans-serif;
+    --transition-fast: 0.25s ease-in-out;
+    --max-width: 1200px;
+  }
+
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+  a:hover,
+  a:focus {
+    color: var(--color-accent-hover);
+    outline: none;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    background: #dbeafe;
+    border-bottom: 1px solid #93c5fd;
+    z-index: 1000;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.15);
+  }
+  .logo {
+    font-weight: 800;
+    font-size: 1.75rem;
+    color: var(--color-accent);
+    letter-spacing: 0.08em;
+    user-select: none;
+    cursor: default;
+  }
+  nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+  nav a.btn-link {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    border: 2px solid var(--color-button-bg);
+    background-color: transparent;
+    padding: 0.5rem 1.5rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+    user-select: none;
+  }
+  nav a.btn-link:hover,
+  nav a.btn-link:focus {
+    background-color: var(--color-button-bg);
+    color: white;
+    outline: none;
+  }
+
+  main {
+    flex-grow: 1;
+    max-width: var(--max-width);
+    width: 90%;
+    margin: 2rem auto 4rem;
+  }
+
+  section.hero {
+    background: linear-gradient(135deg, #dbeafe, #60a5fa);
+    color: var(--color-text-primary);
+    border-radius: var(--radius);
+    padding: 4rem 2rem;
+    margin-bottom: 3rem;
+    box-shadow: var(--shadow-light);
+    text-align: center;
+  }
+  section.hero h1 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin: 0 0 0.75rem;
+  }
+  section.hero p {
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin: 0;
+  }
+
+  form.post-form {
+    background-color: var(--color-card-bg);
+    border-radius: var(--radius);
+    padding: 2rem 2.5rem;
+    box-shadow: var(--shadow-light);
+    max-width: 600px;
+    margin-bottom: 3rem;
+  }
+  form.post-form h2 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-primary);
+    user-select: none;
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.35rem;
+    font-size: 1rem;
+  }
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 2px solid var(--color-input-border);
+    border-radius: var(--radius);
+    margin-bottom: 1.25rem;
+    font-family: var(--font-body);
+    transition: border-color var(--transition-fast);
+  }
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--color-input-border-focus);
+    box-shadow: 0 0 6px var(--color-accent);
+  }
+  textarea {
+    min-height: 5rem;
+    resize: vertical;
+  }
+  .error-message {
+    color: var(--color-error);
+    font-size: 0.9rem;
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+  }
+
+  button.btn-submit {
+    background-color: var(--color-button-bg);
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 1rem 3rem;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    user-select: none;
+    box-shadow: 0 6px 15px rgba(59,130,246,0.3);
+  }
+  button.btn-submit:hover,
+  button.btn-submit:focus {
+    background-color: var(--color-button-bg-hover);
+    transform: scale(1.05);
+    outline: none;
+  }
+
+  section.listings {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  section.listings h3 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--color-text-primary);
+    margin-bottom: 1.5rem;
+    border-left: 6px solid var(--color-accent);
+    padding-left: 0.85rem;
+    user-select: none;
+  }
+  .listing-item {
+    background-color: #dbeafe;
+    padding: 1.25rem 1.75rem;
+    margin-bottom: 1.25rem;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(59,130,246,0.15);
+    color: var(--color-text-primary);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .listing-item:hover,
+  .listing-item:focus-within {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(59,130,246,0.3);
+    outline: none;
+  }
+  .listing-info strong {
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .listing-info p,
+  .listing-info span {
+    font-size: 1rem;
+    margin: 0.2rem 0;
+    color: var(--color-text-secondary);
+    user-select: text;
+  }
+  .listing-price {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-accent);
+    white-space: nowrap;
+    user-select: text;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    header {
+      padding: 1rem 1rem;
+    }
+    main {
+      width: 95%;
+    }
+    .listing-item {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+    .listing-price {
+      justify-self: start;
+    }
+  }
+
+  footer {
+    padding: 2rem 1rem;
+    color: var(--color-text-secondary);
+    text-align: center;
+    font-size: 0.9rem;
+    border-top: 1px solid #93c5fd;
+    user-select: none;
+    background: #dbeafe;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" tabindex="0">FarmaConnect</div>
+  <nav aria-label="Primary navigation">
+    <a href="farmers.html" class="btn-link" aria-label="Go to Farmers marketplace page">Farmers Marketplace</a>
+  </nav>
+</header>
+<main>
+  <section class="hero" aria-label="Introduction for merchants">
+    <h1>Source Quality Produce, Directly from Farmers</h1>
+    <p>Post your demands and browse fresh products posted by farmers. Connect and negotiate directly for the best deals.</p>
+  </section>
+
+  <form id="merchant-post-form" class="post-form" aria-label="Form to post new demand">
+    <h2>Post a Demand</h2>
+
+    <label for="merchant-product-name">Product Name *</label>
+    <input type="text" id="merchant-product-name" name="productName" placeholder="e.g. Potatoes" required minlength="2" aria-required="true" />
+    <div class="error-message" aria-live="polite" id="merchant-product-name-error"></div>
+
+    <label for="merchant-product-quantity">Quantity (kg) *</label>
+    <input type="number" id="merchant-product-quantity" name="quantity" placeholder="e.g. 200" required min="1" aria-required="true" />
+    <div class="error-message" aria-live="polite" id="merchant-product-quantity-error"></div>
+
+    <label for="merchant-product-price">Maximum Price per kg (₹) *</label>
+    <input type="number" id="merchant-product-price" name="price" placeholder="e.g. 32" min="1" step="any" required aria-required="true" />
+    <div class="error-message" aria-live="polite" id="merchant-product-price-error"></div>
+
+    <label for="merchant-product-description">Description (optional)</label>
+    <textarea id="merchant-product-description" name="description" placeholder="Additional details..."></textarea>
+
+    <button type="submit" class="btn-submit" aria-live="polite">Post Demand</button>
+  </form>
+
+  <section class="listings" aria-label="Farmer Products">
+    <h3>Farmer Products</h3>
+    <div id="farmer-products-list" tabindex="0" aria-live="polite" aria-relevant="additions"></div>
+    <p id="farmer-no-products" style="text-align:center; color: var(--color-text-secondary); user-select:none;">Loading products...</p>
+  </section>
+</main>
+<footer>
+  &copy; 2024 FarmaConnect — Merchants Marketplace
+</footer>
+<script>
+  // Local Storage keys
+  const STORAGE_FARMER_PRODUCTS = 'farmerProducts';
+  const STORAGE_MERCHANT_REQUESTS = 'merchantRequests';
+
+  // Utility: safe parse
+  function tryParseJSON(jsonString) {
+    try {
+      const o = JSON.parse(jsonString);
+      if (o && typeof o === "object") return o;
+    } catch(e) {}
+    return [];
+  }
+
+  let farmerProducts = tryParseJSON(localStorage.getItem(STORAGE_FARMER_PRODUCTS));
+  let merchantRequests = tryParseJSON(localStorage.getItem(STORAGE_MERCHANT_REQUESTS));
+
+  function saveFarmerProducts() {
+    localStorage.setItem(STORAGE_FARMER_PRODUCTS, JSON.stringify(farmerProducts));
+  }
+  function saveMerchantRequests() {
+    localStorage.setItem(STORAGE_MERCHANT_REQUESTS, JSON.stringify(merchantRequests));
+  }
+
+  // Validation
+  function validateField(field, errorEl, minLen=1, minVal=1) {
+    if (!field.value.trim()) {
+      errorEl.textContent = 'This field is required.';
+      return false;
+    }
+    if (minLen > 1 && field.value.trim().length < minLen) {
+      errorEl.textContent = `Must be at least ${minLen} characters.`;
+      return false;
+    }
+    if (field.type === 'number') {
+      const num = Number(field.value);
+      if (isNaN(num) || num < minVal) {
+        errorEl.textContent = `Must be a number ≥ ${minVal}.`;
+        return false;
+      }
+    }
+    errorEl.textContent = '';
+    return true;
+  }
+
+  // Render farmer products for merchants to view
+  const farmerProductsList = document.getElementById('farmer-products-list');
+  const farmerNoProducts = document.getElementById('farmer-no-products');
+
+  function renderFarmerProducts() {
+    farmerProductsList.innerHTML = '';
+    if (!farmerProducts.length) {
+      farmerNoProducts.style.display = 'block';
+      return;
+    }
+    farmerNoProducts.style.display = 'none';
+
+    farmerProducts.forEach(prod => {
+      const div = document.createElement('div');
+      div.className = 'listing-item';
+      div.tabIndex = 0;
+      div.innerHTML = \`
+        <div class="listing-info">
+          <strong>\${prod.productName}</strong>
+          <span>Quantity: \${prod.quantity} kg</span>
+          <span>Price: ₹\${prod.price} per kg</span>
+          \${prod.description ? '<p>' + prod.description + '</p>' : ''}
+        </div>
+      `\;
+      farmerProductsList.appendChild(div);
+    });
+  }
+
+  document.getElementById('merchant-post-form').addEventListener('submit', e => {
+    e.preventDefault();
+
+    const form = e.target;
+    const nameField = form['productName'];
+    const qtyField = form['quantity'];
+    const priceField = form['price'];
+    const descField = form['description'];
+    const nameErr = document.getElementById('merchant-product-name-error');
+    const qtyErr = document.getElementById('merchant-product-quantity-error');
+    const priceErr = document.getElementById('merchant-product-price-error');
+
+    const validName = validateField(nameField, nameErr, 2);
+    const validQty = validateField(qtyField, qtyErr, 1, 1);
+    const validPrice = validateField(priceField, priceErr, 1, 1);
+
+    if (!validName || !validQty || !validPrice) return;
+
+    merchantRequests.push({
+      productName: nameField.value.trim(),
+      quantity: Number(qtyField.value),
+      price: Number(priceField.value),
+      description: descField.value.trim()
+    });
+    saveMerchantRequests();
+
+    renderFarmerProducts();
+
+    form.reset();
+    alert('Demand has been posted. Farmers can now see your request.');
+  });
+
+  renderFarmerProducts();
+</script>
+</body>
+</html>

@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'signupLogin',
-    'commodities'
+    'commodities',
 ]
 
 MIDDLEWARE = [
@@ -150,4 +150,6 @@ AZURE_TRANSLATOR_KEY = 'AOgiOzCLXqSFwlWcW4IlMqq7aVAct0CHlVpvDjcERbjeAfOyNlH0JQQJ
 AZURE_TRANSLATOR_REGION = 'centralindia'
 AZURE_TRANSLATOR_ENDPOINT = 'https://centralindia.api.cognitive.microsofttranslator.com/'
 
+
+AUTH_USER_MODEL = 'signupLogin.User'
 
