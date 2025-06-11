@@ -1,16 +1,17 @@
 import random
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
 import requests
-from django.http import JsonResponse
-from .models import Contact, Profile ,User 
+from django.http import HttpResponseForbidden, JsonResponse
+from .models import *
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .forms import ContactForm
+from .forms import *
 
 def login(request):
     if request.method == 'POST':
@@ -26,7 +27,7 @@ def login(request):
             if user_obj.password == password:
                 auth_login(request, user_obj)
                 try:
-                    profile = Profile.objects.get(user=user_obj)
+                    profile = User.objects.get(username=user_obj.username)
                     print(f"Profile found: {profile}")
                 except Profile.DoesNotExist:
                     messages.error(request, "User profile not found")
@@ -36,9 +37,9 @@ def login(request):
                 # request.session['username'] = user_obj.username
                 print(profile.role)
                 if profile.role == 'farmer':
-                    return redirect('farmer')
+                    return redirect('farmer_page')
                 elif profile.role == 'merchant':
-                    return redirect('merchant')
+                    return redirect('merchant_page')
                 else:
                     messages.error(request, 'Invalid role assigned to your account.')
                     return redirect('login')
@@ -53,7 +54,10 @@ def login(request):
 
     return render(request, 'signupLogin/login.html')
 
-
+def logout(request):
+    auth_logout(request)
+    messages.success(request, "You have successfully logged out.")
+    return redirect('login')
 
 def signup(request):
     if request.method == 'POST':
@@ -294,8 +298,8 @@ def farmer(request):
     return render(request, 'dashboard/farmer-dashboard.html')
 
 
-def user(request):
-    return render(request,'user-management.html')
+# def user(request):
+#     return render(request,'user-management.html')
 
 # def weathertest(request):
 #     return render(request,'weathertest1.html')
@@ -308,25 +312,6 @@ def fetch_weather_data(city):
     response = requests.get(url)
     return response.json()
 
-# View to render the weather page
-# def weather_view(request):
-#     return render(request, 'weather.html')
-
-# API endpoint to fetch weather for a specific area
-# def weather_api(request, area):
-#     # Fetch weather for the given area
-#     weather_data = fetch_weather_data(area)
-    
-#     # Structure the data to send back as JSON
-#     data = {
-#         'city': weather_data.get('name'),
-#         'temperature': weather_data['main']['temp'],
-#         'humidity': weather_data['main']['humidity'],
-#         'conditions': weather_data['weather'][0]['description'],
-#     }
-    
-#     return JsonResponse(data)
-
 def contact_view(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -337,3 +322,140 @@ def contact_view(request):
     else:
         form = ContactForm()
     return render(request, 'home.html', {'form': form})
+
+#  merchants's Views
+@login_required
+def merchant_page(request):
+    if not request.user.is_authenticated or request.user.role != 'merchant':
+        messages.error(request, "You don’t have access to that page.So you have redirected to home page")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    else:
+        if request.method == "POST":
+            form = MerchantRequestForm(request.POST)
+            if form.is_valid():
+                product=form.save(commit=False)
+                product.user = request.user
+                product.save()
+                messages.success(request, "Demand posted successfully!")
+                return redirect('merchant_page')
+        else:
+            form = MerchantRequestForm()
+        farmer_products = FarmerProduct.objects.all().order_by('-posted_at')
+        return render(request, 'merchants.html', {
+            'form': form,
+            'farmer_products': farmer_products
+        })
+
+@login_required
+def merchant_dashboard(request):
+    if not request.user.is_authenticated or request.user.role != 'merchant':
+        messages.error(request, "You don’t have access to that page.So you have redirected to home page")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    else:
+        merchant_requests = MerchantRequest.objects.filter(user=request.user)
+        return render(request, 'merchant_dashboard.html', {'merchant_requests': merchant_requests})
+
+
+@login_required
+def farmer_page(request):
+    if not request.user.is_authenticated or request.user.role != 'farmer':
+        messages.error(request, "You don’t have access to this page.")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    else:
+        if request.method == "POST":
+            form = FarmerProductForm(request.POST)
+            if form.is_valid():
+                latitude = request.POST.get('latitude')
+                longitude = request.POST.get('longitude')
+
+                try:
+                    latitude = float(latitude)
+                    longitude = float(longitude)
+                except (TypeError, ValueError):
+                    messages.error(request, "Location not available. Please allow location access.")
+                    return redirect('farmer_page')
+                product=form.save(commit=False)
+                product.user = request.user
+                product.latitude = request.POST.get('latitude')
+                product.longitude = request.POST.get('longitude')
+                product.save()
+                messages.success(request, "Product posted successfully!")
+                return redirect('farmer_page')
+        else:
+            form = FarmerProductForm()
+        merchant_requests = MerchantRequest.objects.all().order_by('-created_at')
+        return render(request, 'farmers.html', {
+            'form': form,
+            'merchant_requests': merchant_requests
+        })
+@login_required
+def farmer_dashboard(request):
+    if not request.user.is_authenticated or request.user.role != 'farmer':
+        messages.error(request, "You don’t have access to that page.So you have redirected to home page")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    else:
+        farmer_requests = FarmerProduct.objects.filter(user=request.user)
+        return render(request, 'farmer_dashboard.html', {'farmer_requests': farmer_requests})
+
+@login_required
+def create_request(request):
+    if request.user.role not in ['merchant', 'farmer']:
+        messages.error(request, "You don’t have access to that page.So you have redirected to home page")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
+    if request.user.role == 'farmer':
+        form = FarmerProductForm(request.POST or None)
+    else:
+        form = MerchantRequestForm(request.POST or None)
+    if form.is_valid():
+        merchant_req = form.save(commit=False)
+        merchant_req.user = request.user
+        merchant_req.save()
+        if request.user.role=='farmer':
+            return redirect('farmer_dashboard')
+        else:
+            return redirect('merchant_dashboard')
+
+    return render(request, 'create_request.html', {'form': form})
+
+@login_required
+def update_request(request, pk):
+    if request.user.role not in ['merchant', 'farmer']:
+        messages.error(request, "You don’t have access to that page.So you have redirected to home page")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    if request.user.role == 'farmer':
+        request_obj = get_object_or_404(FarmerProduct, pk=pk, user=request.user)
+        form = FarmerProductForm(request.POST or None, instance=request_obj)
+    else:
+        request_obj = get_object_or_404(MerchantRequest, pk=pk, user=request.user)
+        form = MerchantRequestForm(request.POST or None, instance=request_obj)
+    if form.is_valid():
+        form.save()
+        if request.user.role=='farmer':
+            return redirect('farmer_dashboard')
+        else:
+            return redirect('merchant_dashboard')
+    return render(request, 'update_request.html', {'form': form})
+
+@login_required
+def delete_request(request, pk):
+    if request.user.role != 'merchant' | request.user.role != 'farmer':
+        messages.error(request, "You don’t have access to that page.So you have redirected to home page")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    if request.user.role == 'farmer':
+        request_obj = get_object_or_404(FarmerProduct, pk=pk, user=request.user)
+    else:
+        request_obj = get_object_or_404(MerchantRequest, pk=pk, user=request.user)
+    if request.method == 'POST':
+        request_obj.delete()
+        if request.user.role=='farmer':
+            return redirect('farmer_dashboard')
+        else:
+            return redirect('merchant_dashboard')
+    return render(request, 'delete_confirm.html', {'request_obj': request_obj})
+
+
+
+
+
+

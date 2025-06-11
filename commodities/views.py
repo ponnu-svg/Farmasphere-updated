@@ -1,13 +1,15 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import requests
 
 API_KEY = '579b464db66ec23bdd0000019ecc0f38a3ba40c87b425aad8495528e'
 RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070'
-
+@login_required
 def agricultural_commodities(request):
     return render(request, "commodities/commodities.html")
 
+@login_required
 def fetch_filters(request):
     """
     Return unique commodities and markets for a given state.
@@ -46,7 +48,7 @@ def fetch_filters(request):
     except requests.exceptions.RequestException as e:
         return JsonResponse({"error": "Failed to fetch data from API.", "details": str(e)}, status=500)
 
-
+@login_required
 def fetch_commodity_data(request):
     state = request.GET.get("state")
     date = request.GET.get("date")
@@ -94,3 +96,26 @@ def fetch_commodity_data(request):
 
     except requests.exceptions.RequestException as e:
         return JsonResponse({"error": "Failed to fetch data from API.", "details": str(e)}, status=500)
+
+@login_required  
+def farmer_schemes_view(request):
+    url = "https://data.vikaspedia.in/api/public/content/page-content?ctx=/schemesall/schemes-for-farmers&lgn=en"
+    schemes = []
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+
+        for item in data.get("contentList", []):
+            schemes.append({
+                "title": item.get("title"),
+                "summary": item.get("summery"),
+                "url": f"https://schemes.vikaspedia.in/viewcontent{item.get('context_path')}?lgn=en"
+            })
+
+    except requests.exceptions.RequestException as e:
+        print(f"API Request failed: {e}")
+
+    return render(request, "commodities/schemes.html", {"schemes": schemes})
+

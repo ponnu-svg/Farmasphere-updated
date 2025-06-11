@@ -1,0 +1,136 @@
+{% extends './navbar.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<main class="flex-grow max-w-5xl w-11/12 mx-auto mt-10 mb-16">
+
+  <!-- Success Message -->
+  {% if messages %}
+    <div class="mb-4">
+      {% for message in messages %}
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-emerald-100 to-emerald-300 text-emerald-800 p-10 rounded-xl shadow-md text-center mb-12">
+    <h1 class="text-4xl md:text-5xl font-extrabold mb-3">Empower Your Farm, Connect with Merchants</h1>
+    <p class="text-xl font-semibold">Post your fresh produce to reach trusted merchants directly.</p>
+  </section>
+
+  <!-- Product Form -->
+  <section class="bg-emerald-50 p-8 rounded-xl shadow-md max-w-xl mx-auto mb-12">
+    <h2 class="text-2xl font-bold text-emerald-800 mb-6">Post a Product</h2>
+    <form method="post" novalidate id="farmer-post-form">
+      {% csrf_token %}
+      <div class="space-y-5">
+
+        <div>
+          {{ form.product_name.label_tag }}
+          {{ form.product_name|add_class:"w-full border-2 border-emerald-200 rounded-lg p-3"|attr:"placeholder: e.g. Tomatoes" }}
+          {% if form.product_name.errors %}
+            <p class="text-red-600 text-sm">{{ form.product_name.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          {{ form.quantity.label_tag }}
+          {{ form.quantity|add_class:"w-full border-2 border-emerald-200 rounded-lg p-3"|attr:"placeholder: e.g. 100" }}
+          {% if form.quantity.errors %}
+            <p class="text-red-600 text-sm">{{ form.quantity.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          {{ form.price.label_tag }}
+          {{ form.price|add_class:"w-full border-2 border-emerald-200 rounded-lg p-3"|attr:"placeholder: e.g. 30" }}
+          {% if form.price.errors %}
+            <p class="text-red-600 text-sm">{{ form.price.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          {{ form.description.label_tag }}
+          {{ form.description|add_class:"w-full border-2 border-emerald-200 rounded-lg p-3"|attr:"placeholder: Additional details..." }}
+        </div>
+
+        <!-- Hidden Location Fields -->
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+
+        <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-lg py-3 px-8 rounded-lg shadow-lg transition transform hover:scale-105">
+          Post Product
+        </button>
+
+      </div>
+    </form>
+  </section>
+
+  <!-- Merchant Requests -->
+  <section class="max-w-2xl mx-auto">
+    <h3 class="text-2xl font-bold text-emerald-800 border-l-4 border-emerald-400 pl-4 mb-6">Merchant Requests</h3>
+    {% if merchant_requests %}
+      {% for req in merchant_requests %}
+        <div class="bg-green-100 p-4 mb-4 rounded-xl shadow text-green-900">
+          <h4 class="font-bold text-lg">{{ req.product_name }}</h4>
+          <p>Quantity: {{ req.quantity }} kg</p>
+          <p>Price: ₹{{ req.price }} per kg</p>
+          <p>
+            Posted by:<br>
+            <strong>Name:</strong> {{ req.user.full_name }}<br>
+            <strong>Phone:</strong> {{ req.user.phone_number }}<br>
+            <strong>Email:</strong> {{ req.user.email }}
+          </p>
+          <p class="text-sm text-gray-500">created at: {{ req.created_at }}</p>
+          {% if req.description %}
+            <p>{{ req.description }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-center text-gray-600">No Merchant Demands available yet.</p>
+    {% endif %}
+  </section>
+
+</main>
+<script>
+  window.onload = function () {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          document.getElementById('latitude').value = position.coords.latitude;
+          document.getElementById('longitude').value = position.coords.longitude;
+          console.log("Location captured:", position.coords.latitude, position.coords.longitude);
+        },
+        function (error) {
+          alert("Unable to get location. Please allow location access.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+
+  // Prevent form submission without location
+  document.getElementById('farmer-post-form').addEventListener('submit', function (e) {
+    const lat = document.getElementById('latitude').value;
+    const lon = document.getElementById('longitude').value;
+    if (!lat || !lon) {
+      alert("Location data is missing. Please allow location access.");
+      e.preventDefault();
+    }
+  });
+</script>
+<footer class="bg-emerald-50 border-t border-emerald-200 text-center text-sm text-gray-600 py-6">
+  &copy; 2024 FarmaConnect — Farmer Marketplace
+</footer>
+{% endblock %}
+
+<!-- Footer -->
+
+
+<!-- JavaScript to Get Location -->
+
+

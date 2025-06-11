@@ -1,0 +1,86 @@
+{% extends 'navbar.html' %}
+{% block content %}
+  <main>
+    <section id="hero" class="text-center bg-gradient-to-br from-green-100 to-green-300 py-24 px-4">
+      <h1 class="text-5xl md:text-6xl font-extrabold text-green-800 mb-6 max-w-4xl mx-auto leading-tight">
+        Trusted Crop Advisory for Farmers' Success
+      </h1>
+      <p class="text-xl text-gray-500 mb-10 max-w-2xl mx-auto">
+        Stay informed with timely, expert advice on crop management, pest control, irrigation, and weather forecasts tailored to your farming needs.
+      </p>
+      <button onclick="document.getElementById('advisory').scrollIntoView({behavior: 'smooth'})" class="bg-green-800 hover:bg-green-700 text-white font-bold py-4 px-10 rounded-xl shadow-lg">
+        Explore Advisory
+      </button>
+    </section>
+
+    <section id="advisory" class="py-20 bg-white">
+      <h2 class="text-4xl font-bold text-green-800 text-center mb-12">Latest Crop Advisory Tips</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-screen-xl mx-auto px-4">
+        <!-- Card Template -->
+        <div class="bg-green-50 p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300">
+          <svg class="w-12 h-12 text-green-800 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12 7v5l3 3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3 class="text-xl font-bold text-green-800 mb-2">Weather Forecast Alerts</h3>
+          <p class="text-gray-600">Receive up-to-date weather alerts to protect crops from unexpected rainfall or drought, helping you plan irrigation and harvesting.</p>
+        </div>
+
+        <div class="bg-green-50 p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300">
+          <svg class="w-12 h-12 text-green-800 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="M3 12l7-7 7 7-7 7-7-7z" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13 12v6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 15h6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3 class="text-xl font-bold text-green-800 mb-2">Pest & Disease Management</h3>
+          <p class="text-gray-600">Learn early signs of pest infestations and crop diseases with guidance on safe and effective treatment methods to reduce crop loss.</p>
+        </div>
+
+        <div class="bg-green-50 p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300">
+          <svg class="w-12 h-12 text-green-800 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="M5 20h14M5 12h14M5 4h14" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="16" r="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3 class="text-xl font-bold text-green-800 mb-2">Soil Health Monitoring</h3>
+          <p class="text-gray-600">Tips on analyzing soil condition regularly to optimize fertilizer application and maintain soil fertility for better yields.</p>
+        </div>
+
+        <div class="bg-green-50 p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300">
+          <svg class="w-12 h-12 text-green-800 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <rect x="4" y="4" width="16" height="16" rx="3" ry="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 14l4-4 4 4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3 class="text-xl font-bold text-green-800 mb-2">Efficient Irrigation Practices</h3>
+          <p class="text-gray-600">Guidance on water management and irrigation techniques to save water and improve crop health during dry periods.</p>
+        </div>
+
+        <div class="bg-green-50 p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300">
+          <svg class="w-12 h-12 text-green-800 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="M12 2a9 9 0 100 18 9 9 0 000-18z" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15 9l-4 4-1.5-1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3 class="text-xl font-bold text-green-800 mb-2">Crop Rotation Tips</h3>
+          <p class="text-gray-600">Understand when and how to rotate crops effectively to maintain soil health and reduce pest cycles for better harvests.</p>
+        </div>
+
+        <div class="bg-green-50 p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300">
+          <svg class="w-12 h-12 text-green-800 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 8v4m0 0l3-3m-3 3l-3-3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3 class="text-xl font-bold text-green-800 mb-2">Harvesting Best Practices</h3>
+          <p class="text-gray-600">Advice on optimal harvesting timings and methods to maximize quality and reduce loss during crop collection.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="text-center max-w-4xl mx-auto px-4 pb-24 text-gray-600">
+      <h2 class="text-3xl font-bold text-green-800 mb-6">About Crop Advisory</h2>
+      <p>This portal provides farmers with expert advice and practical tips for successful crop management. By staying updated with crop advisory services, farmers can improve yields, reduce losses, and adopt sustainable farming practices.</p>
+    </section>
+  </main>
+
+  <footer class="bg-green-100 text-green-800 text-center py-6 text-sm">
+    &copy; 2024 Agriculture and Farmers Welfare Department. All rights reserved.
+  </footer>
+{%endblock%}

@@ -7,48 +7,152 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter&display=swap" rel="stylesheet" />
  <style>
-    html {
-      scroll-behavior: smooth;
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; margin: 0; background-color: #f9f9f9; }
+    .logo { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+    .line-with-text {
+      display: flex; align-items: center; text-align: center; color: #9ca3af;
+      font-size: 0.875rem; margin-top: 1rem; margin-bottom: 1rem;
     }
-    body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      background-color: #f9f9f9;
+    .line-with-text::before, .line-with-text::after {
+      content: ""; flex: 1; border-bottom: 1px solid #d1d5db;
     }
-    .logo {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 700;
-    }
-    nav a {
-      cursor: pointer;
-      padding-bottom: 0.25rem;
-      border-bottom-width: 2px;
-      border-bottom-color: transparent;
-      transition: border-color 0.3s, color 0.3s;
-    }
-    nav a.active {
-      border-bottom-color: #16a34a;
-      color: #000000;
-      font-weight: 600;
-    }
-    nav a:hover:not(.active) {
-      color: #111827;
+    .line-with-text:not(:empty)::before { margin-right: 0.75rem; }
+    .line-with-text:not(:empty)::after { margin-left: 0.75rem; }
+
+    .loading {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255,255,255,0.8); z-index: 1001;
+      justify-content: center; align-items: center; font-size: 24px;
     }
   </style>
 </head>
 <body class="bg-[#f9f9f9]">
-    <header class="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
-        <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <div class="logo text-black text-xl tracking-wide">FARMASPHERE</div>
-        <ul class="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
+   <div class="loading w-[100%]" id="loadingIndicator">Translating...</div>
+    <header class="w-[100%] border-b border-gray-200 bg-white sticky top-0 z-50">
+    <nav class="flex items-center justify-between py-4 px-20 w-full">
+      <div class="logo text-black text-xl tracking-wide">FARMASPHERE</div>
+      <ul class="hidden md:flex space-x-6 text-m font-mediu  text-gray-700">
+        {% if request.user.role == 'merchant' %}
+            <li><a href="{% url 'merchant_page' %}" class="hover:text-green-600 transition">Home</a></li>
+        {% elif request.user.role == 'farmer' %}
+            <li><a href="{% url 'farmer_page' %}" class="hover:text-green-600 transition">Home</a></li>
+        {% else %}
             <li><a href="{% url 'home' %}" class="hover:text-green-600 transition">Home</a></li>
-            <li><a href="{% url 'weather' %}" class="hover:text-green-600 transition">Weather</a></li>
-            <li><a href="#" class="hover:text-green-600 transition">Crop Advice</a></li>
-            <li><a href="#" class="hover:text-green-600 transition">Schemes</a></li>
-            <li><a href="#" class="hover:text-green-600 transition">Tutorials</a></li>
-            <li><a href="{% url 'profile' %}" class="hover:text-green-600 transition">Profile</a></li>
-        </ul>
-        </nav>
-    </header>
+        {% endif %}
+
+        <li><a href="{% url 'weather' %}" class="hover:text-green-600 transition">Weather</a></li>
+        <li><a href="#" class="hover:text-green-600 transition">Crop Advice</a></li>
+        <li><a href="{% url 'commodities:farmer_schemes' %}" class="hover:text-green-600 transition">Schemes</a></li>
+        <li><a href="#" class="hover:text-green-600 transition">Tutorials</a></li>
+        <li><a href="{% url 'commodities:home' %}" class="hover:text-green-600 transition">MarketPrice</a></li>
+        {% if request.user.role == 'merchant' %}
+            <li><a href="{% url 'merchant_dashboard' %}" class="hover:text-green-600 transition">Manage My Demands</a></li>
+        {% else %}
+            <li><a href="{% url 'farmer_dashboard' %}" class="hover:text-green-600 transition">Manage My Requests</a></li>
+        {% endif %}
+      </ul>
+      <div class="hidden md:flex items-center space-x-2 ml-4">
+        <select id="languageSelect" onchange="translatePage()" class="border border-gray-300 rounded px-2 py-1 text-sm">
+          <option value="en">English</option>
+          <option value="ta">Tamil</option>
+          <option value="te">Telugu</option>
+          <option value="kn">Kannada</option>
+          <option value="ml">Malayalam</option>
+          <option value="hi">Hindi</option>
+          <option value="mr">Marathi</option>
+          <option value="bho">Bhojpuri</option>
+          <option value="ks">Kashmiri</option>
+          <option value="as">Assamese</option>
+          <option value="pa">Punjabi</option>
+          <option value="or">Odia</option>
+        </select>
+      </div>
+      <a href="{% url 'logout' %}" onclick="return confirmLogout()" class="bg-red-600 text-white font-semibold text-sm px-5 py-1.5 rounded transition hover:bg-red-700">LOGOUT</a>
+    </nav>
+  </header>
+  <main>
+    {% if messages %}
+  <div class="max-w-4xl mx-auto my-4">
+    {% for message in messages %}
+      <div class="p-3 rounded bg-red-100 text-red-700 font-semibold shadow">
+        {{ message }}
+      </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+  {% block content %}
+    {% endblock %}
+    </main>
+    
+<script>
+  // Microsoft Translator integration
+    const translatorApiKey = 'DLD9cH0pI5Mz39HbcFukUhkkym8s1zzchdImFSuWRlLygEkoY7N0JQQJ99BFACGhslBXJ3w3AAAbACOGLP7T';
+    const endpoint = 'https://api.cognitive.microsofttranslator.com';
+    const region = 'centralindia';
+
+    async function translatePage() {
+      const targetLanguage = document.getElementById('languageSelect').value;
+      if (targetLanguage === 'en') return location.reload();
+
+      document.getElementById('loadingIndicator').style.display = 'flex';
+
+      try {
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+          acceptNode: node => {
+            if (!node.nodeValue.trim() ||
+                node.parentNode.tagName === 'SCRIPT' ||
+                node.parentNode.tagName === 'STYLE') return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        });
+
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+        const texts = textNodes.map(n => n.nodeValue.trim()).filter(Boolean);
+        const translations = await translateTexts(texts, targetLanguage);
+
+        if (translations.length === textNodes.length) {
+          for (let i = 0; i < textNodes.length; i++) {
+            textNodes[i].nodeValue = translations[i];
+          }
+        } else {
+          console.error('Mismatch in translation count');
+        }
+
+        document.documentElement.lang = targetLanguage;
+      } catch (error) {
+        console.error('Translation error:', error);
+        alert('Translation failed. See console for details.');
+      } finally {
+        document.getElementById('loadingIndicator').style.display = 'none';
+      }
+    }
+
+    async function translateTexts(texts, targetLanguage) {
+      const url = `${endpoint}/translate?api-version=3.0&to=${targetLanguage}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Ocp-Apim-Subscription-Key': translatorApiKey,
+          'Ocp-Apim-Subscription-Region': region,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(texts.map(text => ({ Text: text })))
+      });
+
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      return data.map(item => item.translations[0].text);
+    }
+
+
+    function confirmLogout() {
+      return confirm("Are you sure you want to logout?");
+    }
+</script>
+
 </body>
+
 </html>

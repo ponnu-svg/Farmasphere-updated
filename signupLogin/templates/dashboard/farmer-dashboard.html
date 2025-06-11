@@ -1,180 +1,189 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>FarmaConnect - Farmer Marketplace</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
-    <style>
-      body {
-        font-family: 'Poppins', sans-serif;
-      }
-    </style>
-  </head>
-  <body class="bg-white text-gray-700 min-h-screen flex flex-col">
-    <!-- Header -->
-    <header class="sticky top-0 z-50 bg-emerald-50 border-b border-emerald-200 shadow-md px-6 py-4 flex justify-between items-center">
-      <div class="text-2xl font-bold tracking-wide text-emerald-500">FarmaConnect</div>
-      <nav>
-        <a href="merchants.html" class="text-emerald-800 font-semibold border-2 border-emerald-500 px-4 py-2 rounded-lg hover:bg-emerald-500 hover:text-white transition">
-          Merchants Marketplace
-        </a>
-      </nav>
-    </header>
+{% extends './navbar.html'%}
+{% load widget_tweaks %}
+{% block content %}
 
-    <!-- Main -->
-    <main class="flex-grow max-w-5xl w-11/12 mx-auto mt-8 mb-16">
-      <!-- Hero Section -->
-      <section class="bg-gradient-to-br from-emerald-100 to-emerald-300 text-emerald-800 p-10 rounded-xl shadow-md text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-3">Empower Your Farm, Connect with Merchants</h1>
-        <p class="text-xl font-semibold">Post your fresh produce to reach trusted merchants directly. Check merchant demands to plan your sales smartly.</p>
-      </section>
 
-      <!-- Post Product Form -->
-      <form id="farmer-post-form" class="bg-emerald-50 p-8 rounded-xl shadow-md max-w-xl mb-12" aria-label="Form to post new product">
-        <h2 class="text-2xl font-bold text-emerald-800 mb-6">Post a Product</h2>
+  <main class="flex-grow max-w-5xl w-11/12 mx-auto mt-10 mb-16">
 
-        <div class="mb-4">
-          <label for="farm-product-name" class="block font-semibold text-emerald-800 mb-1">Product Name *</label>
-          <input type="text" id="farm-product-name" name="productName" required minlength="2"
-            class="w-full border-2 border-emerald-200 focus:border-emerald-400 focus:ring-emerald-300 rounded-lg p-3 outline-none transition" placeholder="e.g. Tomatoes" />
-          <div class="text-red-600 text-sm mt-1" id="farm-product-name-error"></div>
+    <!-- Success Message -->
+    {% if messages %}
+      <div class="mb-4 max-w-xl mx-auto">
+        {% for message in messages %}
+          <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-100 to-blue-400 text-blue-900 text-center rounded-2xl shadow p-8 mb-12">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Source Quality Produce, Directly from Farmers</h1>
+      <p class="text-lg font-semibold">Post your demands and browse fresh products posted by farmers. Connect and negotiate directly for the best deals.</p>
+    </section>
+
+    <!-- Merchant Demand Form -->
+     <section class="bg-emerald-50 p-8 rounded-xl shadow-md max-w-xl mx-auto mb-12">
+      <h2 class="text-2xl font-bold text-blue-800 mb-6">Post a Demand</h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="space-y-5">
+          <div>
+            {{ form.product_name.label_tag }}
+            {{ form.product_name|add_class:"w-full p-3 border-2 border-blue-300 rounded-xl"|attr:"placeholder: e.g. Tomatoes" }}
+            {% if form.product_name.errors %}
+              <p class="text-red-600 text-sm">{{ form.product_name.errors.0 }}</p>
+            {% endif %}
+          </div>
+          <div>
+            {{ form.quantity.label_tag }}
+            {{ form.quantity|add_class:"w-full p-3 border-2 border-blue-300 rounded-xl"|attr:"placeholder: e.g. 100"}}
+            {% if form.quantity.errors %}
+              <p class="text-red-600 text-sm">{{ form.quantity.errors.0 }}</p>
+            {% endif %}
+          </div>
+          <div>
+            {{ form.price.label_tag }}
+            {{ form.price|add_class:"w-full p-3 border-2 border-blue-300 rounded-xl"|attr:"placeholder: e.g. 30" }}
+            {% if form.price.errors %}
+              <p class="text-red-600 text-sm">{{ form.price.errors.0 }}</p>
+            {% endif %}
+          </div>
+          <div>
+            {{ form.description.label_tag }}
+            {{ form.description|add_class:"w-full p-3 border-2 border-blue-300 rounded-xl min-h-[5rem]"|attr:"placeholder: Additional details..."  }}
+          </div>
+          <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl shadow transition transform hover:scale-105">
+            Post Demand
+          </button>
         </div>
-
-        <div class="mb-4">
-          <label for="farm-product-quantity" class="block font-semibold text-emerald-800 mb-1">Quantity (kg) *</label>
-          <input type="number" id="farm-product-quantity" name="quantity" required min="1"
-            class="w-full border-2 border-emerald-200 focus:border-emerald-400 focus:ring-emerald-300 rounded-lg p-3 outline-none transition" placeholder="e.g. 100" />
-          <div class="text-red-600 text-sm mt-1" id="farm-product-quantity-error"></div>
-        </div>
-
-        <div class="mb-4">
-          <label for="farm-product-price" class="block font-semibold text-emerald-800 mb-1">Price per kg (₹) *</label>
-          <input type="number" id="farm-product-price" name="price" required min="1" step="any"
-            class="w-full border-2 border-emerald-200 focus:border-emerald-400 focus:ring-emerald-300 rounded-lg p-3 outline-none transition" placeholder="e.g. 30" />
-          <div class="text-red-600 text-sm mt-1" id="farm-product-price-error"></div>
-        </div>
-
-        <div class="mb-6">
-          <label for="farm-product-description" class="block font-semibold text-emerald-800 mb-1">Description (optional)</label>
-          <textarea id="farm-product-description" name="description"
-            class="w-full border-2 border-emerald-200 focus:border-emerald-400 focus:ring-emerald-300 rounded-lg p-3 outline-none transition resize-y min-h-[120px]"
-            placeholder="Additional details..."></textarea>
-        </div>
-
-        <button type="submit"
-          class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-lg py-3 px-8 rounded-lg shadow-lg transition transform hover:scale-105">
-          Post Product
-        </button>
       </form>
+    </section>
 
-      <!-- Merchant Requests -->
-      <section class="max-w-2xl mx-auto" aria-label="Merchant Requests">
-        <h3 class="text-2xl font-bold text-emerald-800 border-l-4 border-emerald-400 pl-4 mb-6">Merchant Requests</h3>
-        <div id="merchant-requests-list" class="space-y-4" tabindex="0" aria-live="polite" aria-relevant="additions"></div>
-        <p id="merchant-no-requests" class="text-center text-gray-500">Loading requests...</p>
-      </section>
-    </main>
+    <!-- Farmer Products -->
+    <section class="max-w-2xl mx-auto">
+      <h3 class="text-2xl font-bold text-blue-800 border-l-4 border-blue-500 pl-4 mb-6">Farmer Products</h3>
+      <h3 class="text-2xl font-bold text-emerald-800 border-l-4 border-emerald-400 pl-4 mb-6">Posted Products</h3>
+      {% if farmer_products %}
+        {% for product in farmer_products %}
+          <div class="bg-white shadow-md rounded p-4 mb-4">
+            <h4 class="text-xl font-bold">{{ product.product_name }}</h4>
+            <p>Quantity: {{ product.quantity }} kg</p>
+            <p>Price: ₹{{ product.price }} per kg</p>
+            <p>Posted by:<p> Name:{{ product.user.full_name }}</p> <p>Phone_number:{{ product.user.phone_number }} </p><p>Email:{{ product.user.email }} </p></p>
+            <p class="text-sm text-gray-500">Posted at: {{ product.posted_at }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-center text-gray-600">No Farmer products available yet.</p>
+      {% endif %}
+    </section>
+    
+  </main>
 
-    <!-- Footer -->
-    <footer class="bg-emerald-50 border-t border-emerald-200 text-center text-sm text-gray-600 py-6">
-      &copy; 2024 FarmaConnect — Farmer Marketplace
-    </footer>
+  <footer class="bg-blue-100 text-center text-sm text-gray-700 py-4 border-t border-blue-300">
+    &copy; 2024 FarmaConnect — Merchants Marketplace
+  </footer>
 
-    <!-- JavaScript -->
-    <script>
-      const STORAGE_FARMER_PRODUCTS = 'farmerProducts';
-      const STORAGE_MERCHANT_REQUESTS = 'merchantRequests';
+  <script>
+    const STORAGE_FARMER_PRODUCTS = 'farmerProducts';
+    const STORAGE_MERCHANT_REQUESTS = 'merchantRequests';
 
-      function tryParseJSON(jsonString) {
-        try {
-          const o = JSON.parse(jsonString);
-          return o && typeof o === "object" ? o : [];
-        } catch {
-          return [];
-        }
+    function tryParseJSON(jsonString) {
+      try {
+        const o = JSON.parse(jsonString);
+        if (o && typeof o === "object") return o;
+      } catch(e) {}
+      return [];
+    }
+
+    let farmerProducts = tryParseJSON(localStorage.getItem(STORAGE_FARMER_PRODUCTS));
+    let merchantRequests = tryParseJSON(localStorage.getItem(STORAGE_MERCHANT_REQUESTS));
+
+    function saveMerchantRequests() {
+      localStorage.setItem(STORAGE_MERCHANT_REQUESTS, JSON.stringify(merchantRequests));
+    }
+
+    function validateField(field, errorEl, minLen=1, minVal=1) {
+      if (!field.value.trim()) {
+        errorEl.textContent = 'This field is required.';
+        return false;
       }
-
-      let farmerProducts = tryParseJSON(localStorage.getItem(STORAGE_FARMER_PRODUCTS));
-      let merchantRequests = tryParseJSON(localStorage.getItem(STORAGE_MERCHANT_REQUESTS));
-
-      function saveFarmerProducts() {
-        localStorage.setItem(STORAGE_FARMER_PRODUCTS, JSON.stringify(farmerProducts));
+      if (minLen > 1 && field.value.trim().length < minLen) {
+        errorEl.textContent = `Must be at least ${minLen} characters.`;
+        return false;
       }
-
-      function renderMerchantRequests() {
-        const list = document.getElementById('merchant-requests-list');
-        const noRequests = document.getElementById('merchant-no-requests');
-        list.innerHTML = '';
-
-        if (!merchantRequests.length) {
-          noRequests.style.display = 'block';
-          return;
-        }
-        noRequests.style.display = 'none';
-
-        merchantRequests.forEach(req => {
-          const div = document.createElement('div');
-          div.className = 'bg-emerald-100 p-4 rounded-xl shadow hover:shadow-lg transition';
-          div.tabIndex = 0;
-          div.innerHTML = \`
-            <div>
-              <strong class="text-lg text-emerald-800">\${req.productName}</strong>
-              <div class="text-sm text-gray-700">Quantity: \${req.quantity} kg</div>
-              <div class="text-sm text-gray-700">Max Price: ₹\${req.price} per kg</div>
-              \${req.description ? '<p class="mt-1 text-sm">' + req.description + '</p>' : ''}
-            </div>
-          `\;
-          list.appendChild(div);
-        });
-      }
-
-      function validateField(field, errorEl, minLen = 1, minVal = 1) {
-        const value = field.value.trim();
-        if (!value) {
-          errorEl.textContent = 'This field is required.';
+      if (field.type === 'number') {
+        const num = Number(field.value);
+        if (isNaN(num) || num < minVal) {
+          errorEl.textContent = `Must be a number ≥ ${minVal}.`;
           return false;
         }
-        if (minLen > 1 && value.length < minLen) {
-          errorEl.textContent = \`Must be at least \${minLen} characters.\`;
-          return false;
-        }
-        if (field.type === 'number' && (+value < minVal || isNaN(+value))) {
-          errorEl.textContent = \`Must be a number ≥ \${minVal}.`\;
-          return false;
-        }
-        errorEl.textContent = '';
-        return true;
       }
+      errorEl.textContent = '';
+      return true;
+    }
 
-      document.getElementById('farmer-post-form').addEventListener('submit', e => {
-        e.preventDefault();
-        const form = e.target;
+    const farmerProductsList = document.getElementById('farmer-products-list');
+    const farmerNoProducts = document.getElementById('farmer-no-products');
 
-        const nameField = form['productName'];
-        const qtyField = form['quantity'];
-        const priceField = form['price'];
-        const descField = form['description'];
-        const validName = validateField(nameField, document.getElementById('farm-product-name-error'), 2);
-        const validQty = validateField(qtyField, document.getElementById('farm-product-quantity-error'), 1);
-        const validPrice = validateField(priceField, document.getElementById('farm-product-price-error'), 1);
+    function renderFarmerProducts() {
+      farmerProductsList.innerHTML = '';
+      if (!farmerProducts.length) {
+        farmerNoProducts.style.display = 'block';
+        return;
+      }
+      farmerNoProducts.style.display = 'none';
 
-        if (!(validName && validQty && validPrice)) return;
-
-        farmerProducts.push({
-          productName: nameField.value.trim(),
-          quantity: +qtyField.value,
-          price: +priceField.value,
-          description: descField.value.trim()
-        });
-        saveFarmerProducts();
-        renderMerchantRequests();
-        form.reset();
-        alert('Product has been posted. Merchants can now see your offer.');
+      farmerProducts.forEach(prod => {
+        const div = document.createElement('div');
+        div.className = 'bg-blue-100 p-4 mb-4 rounded-xl shadow text-blue-900 hover:shadow-lg transition';
+        div.tabIndex = 0;
+        div.innerHTML = `
+          <div>
+            <h4 class="font-bold text-lg">${prod.productName}</h4>
+            <p>Quantity: ${prod.quantity} kg</p>
+            <p>Price: ₹${prod.price} per kg</p>
+            ${prod.description ? `<p>${prod.description}</p>` : ''}
+          </div>
+        `;
+        farmerProductsList.appendChild(div);
       });
+    }
 
-      renderMerchantRequests();
-    </script>
-  </body>
+    document.getElementById('merchant-post-form').addEventListener('submit', e => {
+      e.preventDefault();
+
+      const form = e.target;
+      const nameField = form['productName'];
+      const qtyField = form['quantity'];
+      const priceField = form['price'];
+      const descField = form['description'];
+      const nameErr = document.getElementById('merchant-product-name-error');
+      const qtyErr = document.getElementById('merchant-product-quantity-error');
+      const priceErr = document.getElementById('merchant-product-price-error');
+
+      const validName = validateField(nameField, nameErr, 2);
+      const validQty = validateField(qtyField, qtyErr, 1, 1);
+      const validPrice = validateField(priceField, priceErr, 1, 1);
+
+      if (!validName || !validQty || !validPrice) return;
+
+      merchantRequests.push({
+        productName: nameField.value.trim(),
+        quantity: Number(qtyField.value),
+        price: Number(priceField.value),
+        description: descField.value.trim()
+      });
+      saveMerchantRequests();
+
+      renderFarmerProducts();
+
+      form.reset();
+      alert('Demand has been posted. Farmers can now see your request.');
+    });
+
+    renderFarmerProducts();
+  </script>
+  {%endblock%}
 </html>

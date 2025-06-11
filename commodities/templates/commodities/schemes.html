@@ -1,0 +1,53 @@
+{% extends 'navbar.html' %}
+{% block content %}
+<main>
+  <!-- Hero Section -->
+  <section id="hero" class="text-center bg-gradient-to-br from-blue-100 to-blue-200 py-24 px-6">
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight max-w-3xl mx-auto mb-6">
+      Empowering Farmers with Central Government Schemes
+    </h1>
+    <p class="text-lg sm:text-xl text-gray-500 max-w-xl mx-auto mb-8">
+      Explore the latest government initiatives to support and uplift farmers.
+    </p>
+    <button onclick="document.getElementById('schemes').scrollIntoView({behavior: 'smooth'})"
+      class="text-white bg-gray-900 hover:bg-gray-800 font-bold py-4 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-1">
+      Explore Schemes
+    </button>
+  </section>
+
+  <!-- Schemes Section -->
+  <section id="schemes" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">
+        Available Central Government Schemes for Farmers
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for scheme in schemes %}
+        <a href="{{ scheme.url }}" target="_blank">
+          <div class="bg-gray-50 p-6 rounded-xl shadow hover:shadow-xl transition transform hover:-translate-y-1">
+            <svg class="w-12 h-12 text-gray-900 mb-4" fill="none" stroke="currentColor" stroke-width="1.5"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            <h3 class="font-bold text-lg text-gray-900 mb-2">{{ scheme.title }}</h3>
+            <p class="text-gray-600">{{ scheme.summary }}</p>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-16 px-6">
+    <h2 class="text-center text-2xl font-bold text-gray-900 mb-6">About This Portal</h2>
+    <p class="text-center max-w-2xl mx-auto text-gray-600">
+      This platform provides farmers with easy access to the latest government schemes.
+    </p>
+  </section>
+</main>
+
+<footer class="bg-gray-100 py-6 text-center text-sm text-gray-500">
+  &copy; 2024 Central Government of India. All rights reserved.
+</footer>
+{% endblock %}

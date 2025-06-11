@@ -40,19 +40,38 @@
 <body class="bg-[#f9f9f9]">
   <header class="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
     <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-      <div class="logo text-black text-xl tracking-wide">FARMASPHERE</div>
-      <ul id="nav-list" class="hidden md:flex space-x-8 text-sm font-medium text-gray-700">
+    <div class="logo text-black text-xl tracking-wide">FARMASPHERE</div>
+
+    <ul class="hidden md:flex space-x-8 text-sm font-medium text-gray-700">
         <li><a href="#home" class="active">Home</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#products">Products</a></li>
         <li><a href="#howitworks">How It Works</a></li>
         <li><a href="#news">News</a></li>
         <li><a href="#blog">Blog</a></li>
-      </ul>
-      <a href="#contact" class="hidden md:inline-block text-black font-semibold text-sm border border-black px-6 py-2 hover:bg-green-600 hover:text-black transition">CONTACT</a>
+    </ul>
+
+    <div class="hidden md:flex items-center space-x-4"> {# Use a div for this group, and apply space-x-4 #}
+        <a href="#contact" class="text-black font-semibold text-sm border border-black px-6 py-2 hover:bg-green-600 hover:text-black transition">CONTACT</a>
+
+        {# Conditional Auth Buttons #}
+    
+        <a href="{% url 'signup' %}" class="bg-green-600 text-white font-semibold text-sm px-6 py-2 rounded transition hover:bg-green-700">SIGN UP</a>
+        <a href="{% url 'login' %}" class="bg-blue-600 text-white font-semibold text-sm px-6 py-2 rounded transition hover:bg-blue-700">LOGIN</a>
+        
+    </div>
 
     </nav>
   </header>
+  {% if messages %}
+  <div class="max-w-4xl mx-auto my-4">
+    {% for message in messages %}
+      <div class="p-3 rounded bg-red-100 text-red-700 font-semibold shadow">
+        {{ message }}
+      </div>
+    {% endfor %}
+    </div>
+    {% endif %}
 
   <section id="home" class="relative w-full scroll-mt-20">
     <img class="w-full h-[500px] object-cover brightness-[0.45]" src="https://storage.googleapis.com/a1aa/image/14c88d46-af75-4955-4d3b-e18c498af670.jpg" alt="Fresh produce market" />
@@ -71,7 +90,7 @@
         <p class="text-gray-600 text-base leading-relaxed mb-6">
           Farmasphere is revolutionizing agriculture by providing farmers with a dynamic web platform that connects them directly to the marketplace...
         </p>
-        <a class="text-gray-800 underline text-base font-normal" href="{%url 'farmer'%}">Get in touch</a>
+        <a class="text-gray-800 underline text-base font-normal" href="#contact">Get in touch</a>
       </section>
       <section class="md:w-1/2 mt-10 md:mt-0">
         <div class="grid grid-cols-3 gap-2 mb-2">

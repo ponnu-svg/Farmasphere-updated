@@ -5,3 +5,6 @@ from .models import *
 admin.site.register(Profile)
 admin.site.register(Contact)
 admin.site.register(User)
+admin.site.register(FarmerProduct)
+admin.site.register(MerchantRequest)
+
