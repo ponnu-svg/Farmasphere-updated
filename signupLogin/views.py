@@ -12,6 +12,7 @@ from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .forms import *
+from .utils import haversine_distance
 
 def login(request):
     if request.method == 'POST':
@@ -324,27 +325,46 @@ def contact_view(request):
     return render(request, 'home.html', {'form': form})
 
 #  merchants's Views
-@login_required
 def merchant_page(request):
     if not request.user.is_authenticated or request.user.role != 'merchant':
-        messages.error(request, "You don’t have access to that page.So you have redirected to home page")
+        messages.error(request, "You don’t have access to that page. So you have been redirected.")
         return redirect(request.META.get('HTTP_REFERER', '/'))
+    
+    if request.method == "POST":
+        form = MerchantRequestForm(request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.user = request.user
+            product.save()
+            messages.success(request, "Demand posted successfully!")
+            return redirect('merchant_page')
     else:
-        if request.method == "POST":
-            form = MerchantRequestForm(request.POST)
-            if form.is_valid():
-                product=form.save(commit=False)
-                product.user = request.user
-                product.save()
-                messages.success(request, "Demand posted successfully!")
-                return redirect('merchant_page')
-        else:
-            form = MerchantRequestForm()
-        farmer_products = FarmerProduct.objects.all().order_by('-posted_at')
-        return render(request, 'merchants.html', {
-            'form': form,
-            'farmer_products': farmer_products
-        })
+        form = MerchantRequestForm()
+
+    # Get the latest merchant request from this user (optional: get location from there)
+    latest_request = MerchantRequest.objects.filter(user=request.user).order_by('-created_at').first()
+
+    farmer_products = FarmerProduct.objects.all()
+
+    # If merchant location is available, filter nearby
+    if latest_request and latest_request.latitude and latest_request.longitude:
+        nearby_products = []
+        for fp in farmer_products:
+            if fp.latitude and fp.longitude:
+                distance = haversine_distance(
+                    latest_request.latitude,
+                    latest_request.longitude,
+                    fp.latitude,
+                    fp.longitude
+                )
+                if distance <= 50:  # Within 50 km
+                    nearby_products.append(fp)
+        farmer_products = nearby_products
+
+    return render(request, 'merchants.html', {
+        'form': form,
+        'farmer_products': farmer_products
+    })
 
 @login_required
 def merchant_dashboard(request):
@@ -359,35 +379,57 @@ def merchant_dashboard(request):
 @login_required
 def farmer_page(request):
     if not request.user.is_authenticated or request.user.role != 'farmer':
-        messages.error(request, "You don’t have access to this page.")
+        messages.error(request, "You don’t have access to that page. So you have been redirected.")
         return redirect(request.META.get('HTTP_REFERER', '/'))
-    else:
-        if request.method == "POST":
-            form = FarmerProductForm(request.POST)
-            if form.is_valid():
-                latitude = request.POST.get('latitude')
-                longitude = request.POST.get('longitude')
 
-                try:
-                    latitude = float(latitude)
-                    longitude = float(longitude)
-                except (TypeError, ValueError):
-                    messages.error(request, "Location not available. Please allow location access.")
-                    return redirect('farmer_page')
-                product=form.save(commit=False)
-                product.user = request.user
-                product.latitude = request.POST.get('latitude')
-                product.longitude = request.POST.get('longitude')
-                product.save()
-                messages.success(request, "Product posted successfully!")
+    if request.method == "POST":
+        form = FarmerProductForm(request.POST)
+        if form.is_valid():
+            latitude = request.POST.get('latitude')
+            longitude = request.POST.get('longitude')
+
+            try:
+                latitude = float(latitude)
+                longitude = float(longitude)
+            except (TypeError, ValueError):
+                messages.error(request, "Location not available. Please allow location access.")
                 return redirect('farmer_page')
-        else:
-            form = FarmerProductForm()
-        merchant_requests = MerchantRequest.objects.all().order_by('-created_at')
-        return render(request, 'farmers.html', {
-            'form': form,
-            'merchant_requests': merchant_requests
-        })
+
+            product = form.save(commit=False)
+            product.user = request.user
+            product.latitude = latitude
+            product.longitude = longitude
+            product.save()
+
+            messages.success(request, "Product posted successfully!")
+            return redirect('farmer_page')
+    else:
+        form = FarmerProductForm()
+
+    # Get the latest product posted by the farmer (used to determine location)
+    latest_product = FarmerProduct.objects.filter(user=request.user).order_by('-posted_at').first()
+    merchant_requests = MerchantRequest.objects.all()
+
+    # Filter merchant requests based on proximity
+    if latest_product and latest_product.latitude and latest_product.longitude:
+        nearby_requests = []
+        for req in merchant_requests:
+            if req.latitude and req.longitude:
+                distance = haversine_distance(
+                    latest_product.latitude,
+                    latest_product.longitude,
+                    req.latitude,
+                    req.longitude
+                )
+                if distance <= 50:  # within 50 km
+                    nearby_requests.append(req)
+        merchant_requests = nearby_requests
+
+    return render(request, 'farmers.html', {
+        'form': form,
+        'merchant_requests': merchant_requests
+    })
+
 @login_required
 def farmer_dashboard(request):
     if not request.user.is_authenticated or request.user.role != 'farmer':
