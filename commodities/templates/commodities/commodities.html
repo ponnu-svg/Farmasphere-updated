@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agricultural Commodities</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter&display=swap" rel="stylesheet" />
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9f9f9;
+    }
+    .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+    nav a {
+      cursor: pointer;
+      padding-bottom: 0.25rem;
+      border-bottom-width: 2px;
+      border-bottom-color: transparent;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    nav a.active {
+      border-bottom-color: #16a34a;
+      color: #000000;
+      font-weight: 600;
+    }
+    nav a:hover:not(.active) {
+      color: #111827;
+    }
+  </style>
+</head>
+<body class="text-gray-800 min-h-screen px-6 py-8">
+
+  <!-- Navbar -->
+  <header class="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
+    <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+      <div class="logo text-black text-xl tracking-wide">FARMASPHERE</div>
+      <ul class="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
+        <li><a href="{% url 'home' %}" class="hover:text-green-600 transition">Home</a></li>
+        <li><a href="{% url 'weather' %}" class="hover:text-green-600 transition">Weather</a></li>
+        <li><a href="#" class="hover:text-green-600 transition">Crop Advice</a></li>
+        <li><a href="#" class="hover:text-green-600 transition">Schemes</a></li>
+        <li><a href="#" class="hover:text-green-600 transition">Tutorials</a></li>
+        <li><a href="{% url 'profile' %}" class="hover:text-green-600 transition">Profile</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Language Loading Spinner -->
+  <div id="loadingIndicator" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded shadow text-center">
+      <span class="text-green-600 font-semibold">Translating content...</span>
+    </div>
+  </div>
+
+  <!-- Title & Language Selector -->
+  <header class="text-center mt-8 mb-6">
+    <h1 class="text-3xl font-bold text-green-700">Agricultural Commodity Prices</h1>
+    <div class="hidden md:flex items-center space-x-2 mt-4 justify-center">
+      <label for="languageSelect" class="mr-2">Language:</label>
+      <select id="languageSelect" onchange="translatePage()" class="border border-gray-300 rounded px-2 py-1 text-sm">
+        <option value="en">English</option>
+        <option value="ta">Tamil</option>
+        <option value="te">Telugu</option>
+        <option value="kn">Kannada</option>
+        <option value="ml">Malayalam</option>
+        <option value="hi">Hindi</option>
+        <option value="mr">Marathi</option>
+        <option value="bho">Bhojpuri</option>
+        <option value="ks">Kashmiri</option>
+        <option value="as">Assamese</option>
+        <option value="pa">Punjabi</option>
+        <option value="or">Odia</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Filter Section -->
+  <section class="flex flex-wrap gap-4 items-end justify-center mb-6 max-w-4xl mx-auto">
+    <div class="flex flex-col min-w-[200px]">
+      <label for="stateSelect" class="font-semibold mb-1">Select State:</label>
+      <select id="stateSelect" class="border border-green-600 rounded px-3 py-2 text-base">
+        <option value="">-- Select a state --</option>
+        <option value="Maharashtra">Maharashtra</option>
+        <option value="Karnataka">Karnataka</option>
+        <option value="Tamil Nadu">Tamil Nadu</option>
+        <option value="Andhra Pradesh">Andhra Pradesh</option>
+        <option value="Punjab">Punjab</option>
+        <option value="Telangana">Telangana</option>
+      </select>
+    </div>
+    <button id="fetchBtn" class="bg-green-600 text-white font-semibold py-2 px-6 rounded hover:bg-green-700 transition-all duration-300">
+      Fetch Data
+    </button>
+  </section>
+
+  <!-- Status/Feedback -->
+  <div id="loading" class="text-gray-500 italic text-center hidden">Loading data, please wait...</div>
+  <div id="error" class="text-red-600 text-center mt-4 font-semibold"></div>
+  <div id="noData" class="text-gray-600 text-center mt-4">Select a state and click "Fetch Data" to view commodity prices.</div>
+
+  <!-- Table Section -->
+  <div class="overflow-x-auto mt-6 max-w-6xl mx-auto">
+    <table id="commoditiesTable" class="hidden w-full text-sm bg-white shadow rounded overflow-hidden">
+      <thead class="bg-green-700 text-white">
+        <tr>
+          <th class="px-4 py-2 text-left">State</th>
+          <th class="px-4 py-2 text-left">Market</th>
+          <th class="px-4 py-2 text-left">Commodity</th>
+          <th class="px-4 py-2 text-left">Min Price</th>
+          <th class="px-4 py-2 text-left">Max Price</th>
+          <th class="px-4 py-2 text-left">Modal Price</th>
+          <th class="px-4 py-2 text-left">Date</th>
+        </tr>
+      </thead>
+      <tbody id="commoditiesBody" class="divide-y divide-gray-200"></tbody>
+    </table>
+  </div>
+
+  <!-- JS -->
+  <script>
+    const fetchBtn = document.getElementById('fetchBtn');
+    const stateSelect = document.getElementById('stateSelect');
+    const loadingDiv = document.getElementById('loading');
+    const errorDiv = document.getElementById('error');
+    const noDataDiv = document.getElementById('noData');
+    const table = document.getElementById('commoditiesTable');
+    const tbody = document.getElementById('commoditiesBody');
+
+    fetchBtn.addEventListener('click', () => {
+      const state = stateSelect.value;
+      errorDiv.textContent = '';
+      tbody.innerHTML = '';
+      table.classList.add('hidden');
+      noDataDiv.classList.add('hidden');
+
+      if (!state) {
+        errorDiv.textContent = 'Please select a state before fetching data.';
+        return;
+      }
+
+      loadingDiv.classList.remove('hidden');
+
+      fetch(`/fetch-commodity-data?state=${encodeURIComponent(state)}`)
+        .then(response => {
+          loadingDiv.classList.add('hidden');
+          if (!response.ok) throw new Error(`Error: ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          if (data.error) {
+            errorDiv.textContent = data.error;
+            noDataDiv.classList.remove('hidden');
+            return;
+          }
+
+          const commodities = data.commodities || [];
+          if (commodities.length === 0) {
+            noDataDiv.textContent = `No commodity data found for ${state}.`;
+            noDataDiv.classList.remove('hidden');
+            return;
+          }
+
+          commodities.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td class="px-4 py-2">${item.state || ''}</td>
+              <td class="px-4 py-2">${item.market || ''}</td>
+              <td class="px-4 py-2">${item.commodity || ''}</td>
+              <td class="px-4 py-2">${item.min_price || '--'}</td>
+              <td class="px-4 py-2">${item.max_price || '--'}</td>
+              <td class="px-4 py-2">${item.modal_price || '--'}</td>
+              <td class="px-4 py-2">${item.date || ''}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+
+          table.classList.remove('hidden');
+          noDataDiv.classList.add('hidden');
+        })
+        .catch(err => {
+          loadingDiv.classList.add('hidden');
+          errorDiv.textContent = 'Failed to fetch commodity data. Try again later.';
+          noDataDiv.classList.remove('hidden');
+          console.error(err);
+        });
+    });
+
+    const translatorApiKey = 'YOUR_TRANSLATOR_API_KEY';
+    const endpoint = 'https://api.cognitive.microsofttranslator.com';
+    const region = 'centralindia';
+
+    async function translatePage() {
+      const targetLanguage = document.getElementById('languageSelect').value;
+      if (targetLanguage === 'en') return location.reload();
+
+      document.getElementById('loadingIndicator').style.display = 'flex';
+
+      try {
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+          acceptNode: node => {
+            const parent = node.parentNode.tagName;
+            if (!node.nodeValue.trim() || parent === 'SCRIPT' || parent === 'STYLE') return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        });
+
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+        const texts = textNodes.map(n => n.nodeValue.trim()).filter(Boolean);
+        const translations = await translateTexts(texts, targetLanguage);
+
+        if (translations.length === textNodes.length) {
+          for (let i = 0; i < textNodes.length; i++) {
+            textNodes[i].nodeValue = translations[i];
+          }
+        } else {
+          console.error('Mismatch in translation count');
+        }
+
+        document.documentElement.lang = targetLanguage;
+      } catch (error) {
+        console.error('Translation error:', error);
+        alert('Translation failed. See console for details.');
+      } finally {
+        document.getElementById('loadingIndicator').style.display = 'none';
+      }
+    }
+
+    async function translateTexts(texts, targetLanguage) {
+      const url = `${endpoint}/translate?api-version=3.0&to=${targetLanguage}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Ocp-Apim-Subscription-Key': translatorApiKey,
+          'Ocp-Apim-Subscription-Region': region,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(texts.map(text => ({ Text: text })))
+      });
+
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      return data.map(item => item.translations[0].text);
+    }
+  </script>
+</body>
+</html>

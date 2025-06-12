@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Personalized Farmer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .weather, .advice {
+            width: 45%;
+        }
+        .weather {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .advice {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    {% comment %} <script>
+        // Check if user is logged in and fetch user data
+        if (!localStorage.getItem('userRole')) {
+            alert("Please log in first");
+            window.location.href = './login.html';
+        } else {
+            // Set the user profile or location from the localStorage (or default)
+            var userProfile = JSON.parse(localStorage.getItem('userProfile')) || { location: "Unknown", crops: ["Wheat", "Corn"] };
+        }
+    </script> {% endcomment %}
+
+    <h1>🌾 Welcome to Your Personalized Farmer Dashboard</h1>
+    <p>Based on your location and farming preferences, we have tailored advice just for you!</p>
+
+    <div class="container">
+        <!-- Weather Section -->
+        <div class="weather">
+            <h2>Current Weather</h2>
+            <p id="weatherData">Loading weather data...</p>
+        </div>
+
+        <!-- Personalized Crop Advice Section -->
+        <div class="advice">
+            <h2>Your Crop Advice</h2>
+            <p id="cropAdvice">Loading personalized crop advice...</p>
+        </div>
+    </div>
+
+    <script>
+        // Example of personalized advice based on user profile
+        function getWeather() {
+            // This could be replaced by real weather data fetching
+            const weatherData = "Sunny, 28°C";  // Mock data
+            document.getElementById("weatherData").textContent = weatherData;
+        }
+
+        function getPersonalizedCropAdvice() {
+            // Get personalized advice based on the user's crops and location
+            const advice = `Since you're growing ${userProfile.crops.join(", ")}, it's a great time to water your crops as the weather is warm and sunny.`;
+            document.getElementById("cropAdvice").textContent = advice;
+        }
+
+        // Initialize weather and personalized advice
+        getWeather();
+        getPersonalizedCropAdvice();
+    </script>
+</body>
+</html>

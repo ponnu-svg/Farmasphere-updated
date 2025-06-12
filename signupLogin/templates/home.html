@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Smart Farming Portal - SPA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter&display=swap" rel="stylesheet" />
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+    nav a {
+      cursor: pointer;
+      padding-bottom: 0.25rem;
+      border-bottom-width: 2px;
+      border-bottom-color: transparent;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    nav a.active {
+      border-bottom-color: #16a34a;
+      color: #000000;
+      font-weight: 600;
+    }
+    nav a:hover:not(.active) {
+      color: #111827;
+    }
+  </style>
+</head>
+<body class="bg-[#f9f9f9]">
+  <header class="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
+    <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+      <div class="logo text-black text-xl tracking-wide">FARMASPHERE</div>
+      <ul id="nav-list" class="hidden md:flex space-x-8 text-sm font-medium text-gray-700">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#howitworks">How It Works</a></li>
+        <li><a href="#news">News</a></li>
+        <li><a href="#blog">Blog</a></li>
+      </ul>
+      <a href="#contact" class="hidden md:inline-block text-black font-semibold text-sm border border-black px-6 py-2 hover:bg-green-600 hover:text-black transition">CONTACT</a>
+
+    </nav>
+  </header>
+
+  <section id="home" class="relative w-full scroll-mt-20">
+    <img class="w-full h-[500px] object-cover brightness-[0.45]" src="https://storage.googleapis.com/a1aa/image/14c88d46-af75-4955-4d3b-e18c498af670.jpg" alt="Fresh produce market" />
+    <div class="absolute inset-0 flex flex-col justify-center max-w-7xl mx-auto px-6 md:px-12">
+      <h1 class="text-white font-bold text-4xl md:text-5xl max-w-3xl leading-tight">Empowering farmers</h1>
+      <p class="text-white text-lg md:text-xl mt-2 max-w-2xl">Your direct marketplace for produce and knowledge</p>
+      <a href="#" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold text-sm md:text-base rounded px-6 py-3 mt-6">VIEW PRODUCTS</a>
+    </div>
+  </section>
+
+  <main id="about" class="max-w-7xl mx-auto px-6 sm:px-10 py-20 scroll-mt-20">
+    <div class="flex flex-col md:flex-row md:space-x-12">
+      <section class="md:w-1/2 max-w-xl">
+        <p class="text-green-600 font-semibold text-xs uppercase mb-2 tracking-wide">EMPOWERING FARMERS</p>
+        <h1 class="font-extrabold text-3xl leading-tight mb-4">Your partner in modern agriculture</h1>
+        <p class="text-gray-600 text-base leading-relaxed mb-6">
+          Farmasphere is revolutionizing agriculture by providing farmers with a dynamic web platform that connects them directly to the marketplace...
+        </p>
+        <a class="text-gray-800 underline text-base font-normal" href="#">Get in touch</a>
+      </section>
+      <section class="md:w-1/2 mt-10 md:mt-0">
+        <div class="grid grid-cols-3 gap-2 mb-2">
+          <img class="w-full object-cover" src="https://storage.googleapis.com/a1aa/image/70d85a59-c46e-4b98-66e8-fff9f1a8bfc3.jpg" alt="" />
+          <img class="w-full object-cover" src="https://storage.googleapis.com/a1aa/image/301446f4-61d4-4d42-d371-9018faf5bc0e.jpg" alt="" />
+          <img class="w-full object-cover" src="https://storage.googleapis.com/a1aa/image/0d245b34-bd3d-4f45-8274-24bf1a4c7f2d.jpg" alt="" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <img class="w-full object-cover" src="https://storage.googleapis.com/a1aa/image/761c4ea3-470f-4b61-ee1a-466b89ee9280.jpg" alt="" />
+          <img class="w-full object-cover" src="https://storage.googleapis.com/a1aa/image/6bc3f5f9-4cb7-4d11-7fb9-696897f362ff.jpg" alt="" />
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <section id="products" class="bg-[#f1f6f3] py-20 px-6 max-w-7xl mx-auto scroll-mt-20">
+    <div class="max-w-5xl mx-auto">
+      <p class="text-green-600 font-semibold text-xs uppercase tracking-wider mb-2">EMPOWER YOUR FARM</p>
+      <h1 class="font-extrabold text-3xl mb-8">Unlock the potential of modern agriculture</h1>
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <article class="bg-white shadow-lg">
+          <img class="w-full object-cover" src="https://storage.googleapis.com/a1aa/image/b884dd4a-3247-4607-43da-fccabad62c80.jpg" alt="" />
+          <div class="p-6">
+            <h2 class="font-extrabold text-lg mb-2 cursor-pointer hover:underline">Real-time weather data ›</h2>
+            <p class="text-gray-600 text-sm leading-relaxed">Make informed decisions with real-time weather updates.</p>
+          </div>
+        </article>
+        <article class="bg-white shadow-lg">
+          <img class="w-full object-cover" src="https://storage.googleapis.com/a1aa/image/2ba05018-88cb-46eb-ce41-771859f047f0.jpg" alt="" />
+          <div class="p-6">
+            <h2 class="font-extrabold text-lg mb-2 cursor-pointer hover:underline">Crop recommendations ›</h2>
+            <p class="text-gray-600 text-sm leading-relaxed">Boost your harvest with personalized crop suggestions.</p>
+          </div>
+        </article>
+        <article class="bg-white shadow-lg">
+          <img class="w-full object-cover" src="https://storage.googleapis.com/a1aa/image/343aa730-e071-42c5-906a-1ccecaaf9d50.jpg" alt="" />
+          <div class="p-6">
+            <h2 class="font-extrabold text-lg mb-2 cursor-pointer hover:underline">Modern farming tutorials ›</h2>
+            <p class="text-gray-600 text-sm leading-relaxed">Enhance your skills with expert farming tutorials.</p>
+          </div>
+        </article>
+      </section>
+    </div>
+  </section>
+
+  <section id="howitworks" class="max-w-7xl mx-auto px-6 sm:px-10 py-20 scroll-mt-20 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+    <div>
+      <img alt="Marketplace access" class="w-full object-cover h-[250px]" src="https://storage.googleapis.com/a1aa/image/46c8014e-4403-4ec9-8a5a-a40c499e1b2c.jpg" />
+      <h2 class="font-semibold text-lg mt-4">Marketplace access</h2>
+      <p class="text-gray-600 mt-1">Sell your produce directly and maximize your earnings.</p>
+      <a class="text-gray-600 underline mt-1 inline-block" href="#">Learn more</a>
+    </div>
+    <div>
+      <img alt="Weather insights" class="w-full object-cover h-[250px]" src="https://storage.googleapis.com/a1aa/image/9eedde24-739f-4c5e-05b0-6dc7d489e805.jpg" />
+      <h2 class="font-semibold text-lg mt-4">Weather insights</h2>
+      <p class="text-gray-600 mt-1">Get real-time weather updates tailored for your farming needs.</p>
+      <a class="text-gray-600 underline mt-1 inline-block" href="#">Learn more</a>
+    </div>
+  </section>
+
+  <section id="news" class="max-w-7xl mx-auto px-6 sm:px-10 py-20 scroll-mt-20">
+    <h2 class="text-3xl font-extrabold mb-6">Recent News</h2>
+    <p class="text-gray-700 max-w-3xl mb-10">Stay updated with the latest news and developments in smart farming and agriculture.</p>
+    <div class="grid gap-10 md:grid-cols-2">
+      <article class="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
+        <img class="w-full h-48 object-cover" src="https://storage.googleapis.com/a1aa/image/9eedde24-739f-4c5e-05b0-6dc7d489e805.jpg" alt="News image" />
+        <div class="p-6">
+          <h3 class="text-xl font-semibold mb-2">AI Technology Boosts Crop Yields</h3>
+          <p class="text-gray-500 text-sm mb-3">May 18, 2025</p>
+          <p class="text-gray-700 mb-4">New AI systems are helping farmers monitor crop health and improve productivity across rural regions.</p>
+          <a href="#" class="text-green-600 font-medium hover:underline">Read more →</a>
+        </div>
+      </article>
+      <article class="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
+        <img class="w-full h-48 object-cover" src="https://storage.googleapis.com/a1aa/image/70d85a59-c46e-4b98-66e8-fff9f1a8bfc3.jpg" alt="News image" />
+        <div class="p-6">
+          <h3 class="text-xl font-semibold mb-2">Sustainable Irrigation Project Launched</h3>
+          <p class="text-gray-500 text-sm mb-3">May 12, 2025</p>
+          <p class="text-gray-700 mb-4">A new government-backed initiative aims to provide smart irrigation solutions to over 1 million farmers.</p>
+          <a href="#" class="text-green-600 font-medium hover:underline">Read more →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="blog" class="max-w-7xl mx-auto px-6 py-20 scroll-mt-20">
+    <h1 class="font-extrabold text-2xl mb-10">Stay updated on modern agriculture.</h1>
+    <article class="flex flex-col md:flex-row md:space-x-8">
+      <img class="w-full md:w-1/2 object-cover h-[250px] mb-6 md:mb-0" src="https://storage.googleapis.com/a1aa/image/9926072c-1885-41ef-a71a-227885d88cee.jpg" alt="" />
+      <div class="md:w-1/2">
+        <h2 class="font-semibold text-lg leading-tight mb-1">Maximizing your crop yield: techniques for modern farmers</h2>
+        <p class="text-gray-700 mb-4">May 20, 2025</p>
+        <p class="text-gray-600 mb-4 leading-relaxed">
+          In today’s rapidly evolving agricultural landscape, unlocking the potential of your farm means embracing innovative technologies...
+        </p>
+        <a class="text-gray-900 font-semibold border-b border-gray-900 hover:text-green-700 hover:border-green-700 transition" href="#">Read more</a>
+      </div>
+    </article>
+  </section>
+  <main id="contact">
+  <section id="contact" class="max-w-7xl mx-auto px-6 py-20 scroll-mt-20">
+    <div class="flex flex-col md:flex-row md:space-x-12">
+      <section class="md:w-1/2">
+        <p class="text-green-600 font-semibold text-xs uppercase mb-1">GET IN TOUCH</p>
+        <h1 class="font-extrabold text-2xl leading-tight mb-8">We're here to support you!</h1>
+        <form class="space-y-6 max-w-md">
+          <div>
+            <label for="name" class="block text-xs font-semibold mb-1">Name <span class="text-red-600">*</span></label>
+            <input id="name" name="name" type="text" placeholder="Jane Smith" class="w-full border border-gray-300 px-3 py-2 text-sm rounded-sm focus:outline-none focus:ring-1 focus:ring-black" required />
+          </div>
+          <div>
+            <label for="email" class="block text-xs font-semibold mb-1">Email address <span class="text-red-600">*</span></label>
+            <input id="email" name="email" type="email" placeholder="email@website.com" class="w-full border border-gray-300 px-3 py-2 text-sm rounded-sm focus:outline-none focus:ring-1 focus:ring-black" required />
+          </div>
+          <div>
+            <label for="phone" class="block text-xs font-semibold mb-1">Phone number <span class="text-red-600">*</span></label>
+            <input id="phone" name="phone" type="tel" placeholder="555-555-5555" class="w-full border border-gray-300 px-3 py-2 text-sm rounded-sm focus:outline-none focus:ring-1 focus:ring-black" required />
+          </div>
+          <div>
+            <label for="message" class="block text-xs font-semibold mb-1">Message</label>
+            <textarea id="message" name="message" rows="4" class="w-full border border-gray-300 px-3 py-2 text-sm rounded-sm focus:outline-none focus:ring-1 focus:ring-black"></textarea>
+          </div>
+          <button type="submit" class="bg-black text-white font-semibold text-sm px-6 py-3 rounded-sm hover:bg-gray-900 transition">Submit</button>
+        </form>
+      </section>
+
+      <aside class="md:w-1/2 mt-12 md:mt-0 bg-gray-100 p-8 rounded-sm max-w-md">
+        <div class="mb-6">
+          <h2 class="font-extrabold text-sm mb-2">Get in touch</h2>
+          <p class="flex items-center text-sm text-gray-700">
+            <i class="far fa-envelope mr-2"></i>
+            <a href="mailto:farmasphere@gmail.com" class="underline hover:text-gray-900">farmasphere@gmail.com</a>
+          </p>
+        </div>
+        <div class="mb-6">
+          <h2 class="font-extrabold text-sm mb-2">Location</h2>
+          <p class="flex items-center text-sm text-gray-700">
+            <i class="fas fa-map-marker-alt mr-2"></i>
+            <a href="#" class="underline hover:text-gray-900">Hyderabad, TS IN</a>
+          </p>
+        </div>
+        <div>
+          <h2 class="font-extrabold text-sm mb-2">Hours</h2>
+          <div class="text-sm text-gray-700 space-y-1 max-w-[180px]">
+            <p class="whitespace-nowrap">Monday 9:00am – 10:00pm</p>
+            <p class="whitespace-nowrap">Tuesday 9:00am – 10:00pm</p>
+            <p class="whitespace-nowrap">Wednesday 9:00am – 10:00pm</p>
+            <p class="whitespace-nowrap">Thursday 9:00am – 10:00pm</p>
+            <p class="whitespace-nowrap">Friday 9:00am – 10:00pm</p>
+            <p class="whitespace-nowrap">Saturday 9:00am – 10:00pm</p>
+            <p class="whitespace-nowrap">Sunday 9:00am – 10:00pm</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+  <script>
+    const sections = document.querySelectorAll('section[id], main[id]');
+    const navLinks = document.querySelectorAll('nav ul li a');
+
+    function activateNavLink() {
+      let scrollY = window.pageYOffset;
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionHeight = section.offsetHeight;
+        const sectionId = section.getAttribute('id');
+        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+          navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + sectionId) {
+              link.classList.add('active');
+            }
+          });
+        }
+      });
+    }
+
+    window.addEventListener('scroll', activateNavLink);
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

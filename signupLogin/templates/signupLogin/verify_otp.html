@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify OTP - Farmasphere</title>
+    <link rel="stylesheet" href="{% static 'signupLogin/login.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h3>Verify OTP</h3>
+        <form method="POST" action="{% url 'verify_otp' %}">
+            {% csrf_token %}
+
+            <label for="otp">Enter OTP sent to your Email/Mobile</label>
+            <input type="text" name="otp" placeholder="Enter OTP" required>
+
+            <label for="new_password">New Password</label>
+            <input type="password" name="new_password" placeholder="New Password" required>
+
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+
+            <button type="submit">Reset Password</button>
+        </form>
+    </div>
+</body>
+</html>
